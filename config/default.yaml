@@ -1,0 +1,8 @@
+%YAML:1.0
+# data
+
+# database directory
+database_dir: 
+
+# keypoint detect ORB=1 , SIFT=2, SUFT=3, Fast=4, total = 5 
+keypoint_method: 1

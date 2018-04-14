@@ -1,6 +1,8 @@
-add_library(tako 
+set (tako_files SHARED
     config.cpp
     database.cpp
 )
 
-target_link_libraries( tako rtabmap_core rtabmap_utilite ${LIBRARIES_TAKO})
+add_library(tako ${tako_files})
+
+#target_link_libraries( tako ${LIBRARIES_TAKO})

@@ -1,7 +1,12 @@
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
 
+extern "C"
+{
+ #include "sqlite3/sqlite3.h"   
+}
 #include "tako/common_include.hpp"
+#include "tako/node.hpp"
 
 namespace tako
 {
@@ -10,20 +15,18 @@ namespace tako
         //parameter
         public:
             static std::shared_ptr<SQLiteDatabase> ptr_; // 一次開啟一個 database 就好
-            int id_; // number of picture
-            std::map<int, cv::Mat> imageMap_; //picture
-            std::map<int, double> seq_; //sequence
-        
-        private:
+            std::vector<cv::Mat> images_;
+            std::vector<int> ids_;
+            std::string dbPath_;
             sqlite3 *db_;
+            char* sql_ ;
 
         // function
         public:
-            SQLiteDatabase();
-            bool loadDatabase(const std::string& dbPath);
-            cv::Mat getImage();
-            double getSeq();
+            SQLiteDatabase(std::string& dbPath, char* sql);
+            std::vector<cv::Mat> setDatabaseImage();
             ~SQLiteDatabase();
+            
     };
 }
 #endif

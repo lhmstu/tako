@@ -3,8 +3,10 @@
 
 // define the commomly included file to avoid a long include list
 // SQLite3 library
+extern "C"
+{
 #include "sqlite3/sqlite3.h"
-
+}
 // Opencv 
 //#include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>

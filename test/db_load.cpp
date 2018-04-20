@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     */
 
     //image load
-    const char* sql = "SELECT * FROM Data";
+    const char* sql = "SELECT * FROM Node";
     // execute SQL statement
     //check = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
     sqlite3_stmt *statement;

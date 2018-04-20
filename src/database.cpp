@@ -18,7 +18,8 @@ namespace tako
     }
 
     // put image from database to vector
-    std::vector<cv::Mat> SQLiteDatabase::setDatabaseImage()
+    //std::vector<cv::Mat> SQLiteDatabase::setDatabaseImage(std::vector<tako::node> &nodes)
+    void SQLiteDatabase::setDatabaseImage(std::vector<tako::node> &nodes)
     {
         sqlite3_stmt* statement;
         if (sqlite3_prepare_v2(db_, sql_, strlen(sql_), &statement, 0) != SQLITE_OK)
@@ -30,15 +31,21 @@ namespace tako
         while(true)
         {
             i++;
+            tako::node node;
             result = sqlite3_step(statement);
             if(result == SQLITE_ROW)
             {
                 int id = sqlite3_column_int(statement, 0 );
-                ids_.push_back(id);
+                //ids_.push_back(id);
+                node.id_ = id;
                 int size = sqlite3_column_bytes(statement, 1); // Get the size of the vector
                 uchar* p = (uchar*)sqlite3_column_blob(statement, 1); // Get the pointer to data
                 std::vector<uchar> data(p, p + size); // Initialize the vector with the data 
-                images_.push_back(cv::imdecode(data, CV_LOAD_IMAGE_COLOR));
+                //images_.push_back(cv::imdecode(data, CV_LOAD_IMAGE_COLOR));
+
+                node.image_ = cv::imdecode(data, CV_LOAD_IMAGE_COLOR);
+
+                nodes.push_back(node);
             }
             else
             {
@@ -47,7 +54,6 @@ namespace tako
         }
         sqlite3_finalize(statement);
         std::cout<<"load total " << i << "images"<<std::endl;
-        return images_;
     }
 
     SQLiteDatabase::~SQLiteDatabase()

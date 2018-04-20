@@ -5,20 +5,20 @@
 
 namespace tako
 {
-    class SQLiteDatabase;
     class node
     {
         public:
-            std::shared_ptr<SQLiteDatabase> ptr_;
             int id_;
-            cv::Mat image_;
+            cv::Mat image_; // image color
+            cv::Mat pose_; // pose
 
 
         public:
-            node ();
-            int getId();
-            cv::Mat getImage();
-            ~node ();
+            node (){}
+            int getId(){return this->id_;};
+            cv::Mat getImage(){return this->image_;};
+            cv::Mat getPose(){return this->pose_;};
+            ~node (){}
     };
 }
 #endif // NODE_HPP

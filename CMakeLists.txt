@@ -22,6 +22,8 @@ list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/tako/cmake_modules)
 
 # DBoW3
 find_package(DBoW3 REQUIRED)
+set( DBoW3_INCLUDE_DIRS "/usr/local/include")
+set( DBoW3_LIBS "/usr/local/lib/libDBoW3.so")
 
 ## include 
 set(INCLUDE_DIRS
@@ -32,6 +34,7 @@ set(INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${PCL_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/tools/tako/include
+    ${DBoW3_INCLUDE_DIRS}
     )#${DBoW3_INCLUDE_DIRS}
 INCLUDE_DIRECTORIES( ${INCLUDE_DIRS})
 # libraries
@@ -40,6 +43,7 @@ INCLUDE_DIRECTORIES( ${INCLUDE_DIRS})
 set(LIBRARIES_TAKO
     ${OpenCV_LIBS}
     ${PCL_LIBRARIES}
+    ${DBoW3_LIBS}
     )
 add_definitions(${PCL_DEFINITIONS})
 

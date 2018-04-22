@@ -23,6 +23,7 @@ extern "C"
 #include <set>
 #include <map>
 #include <unordered_map>
+#include <algorithm>
 
 
 #endif //COMMON_INCLUDE_H

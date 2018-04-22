@@ -6,3 +6,7 @@ database_path: /home/alvin/yang_research/research.db
 
 # keypoint detect ORB=1 , SIFT=2, SUFT=3, Fast=4, total = 5 
 keypoint_method: 1
+
+#Bow3 threshold
+vocabulary_database: ./vocabulary.yml.gz
+keypoint_threshold: 0.11

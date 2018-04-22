@@ -19,7 +19,7 @@ namespace tako
 
     // put image from database to vector
     //std::vector<cv::Mat> SQLiteDatabase::setDatabaseImage(std::vector<tako::node> &nodes)
-    void SQLiteDatabase::setDatabaseImage(std::vector<tako::node> &nodes)
+    void SQLiteDatabase::setDatabaseImage(std::vector<tako::Node> &nodes)
     {
         sqlite3_stmt* statement;
         if (sqlite3_prepare_v2(db_, sql_, strlen(sql_), &statement, 0) != SQLITE_OK)
@@ -31,7 +31,7 @@ namespace tako
         while(true)
         {
             i++;
-            tako::node node;
+            tako::Node node;
             result = sqlite3_step(statement);
             if(result == SQLITE_ROW)
             {

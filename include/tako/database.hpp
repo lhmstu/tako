@@ -10,14 +10,14 @@ extern "C"
 
 namespace tako
 {
-    class node;
+    class Node;
     class SQLiteDatabase 
     {
         //parameter
         public:
             static std::shared_ptr<SQLiteDatabase> ptr_; // 一次開啟一個 database 就好
-            std::vector<cv::Mat> images_;
-            std::vector<int> ids_;
+            //std::vector<cv::Mat> images_;
+            //std::vector<int> ids_;
 
             //std::vector<tako::node> nodes_;
 
@@ -29,7 +29,7 @@ namespace tako
         public:
             SQLiteDatabase(std::string& dbPath, char* sql);
             //std::vector<cv::Mat> setDatabaseImage();
-            void setDatabaseImage(std::vector<tako::node> &nodes);
+            void setDatabaseImage(std::vector<tako::Node> &nodes);
             ~SQLiteDatabase();
             
     };

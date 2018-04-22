@@ -5,20 +5,22 @@
 
 namespace tako
 {
-    class node
+    class Node
     {
         public:
             int id_;
             cv::Mat image_; // image color
             cv::Mat pose_; // pose
 
+            cv::Mat descriptor_;
+            
 
         public:
-            node (){}
+            Node (){}
             int getId(){return this->id_;};
             cv::Mat getImage(){return this->image_;};
             cv::Mat getPose(){return this->pose_;};
-            ~node (){}
+            ~Node (){}
     };
 }
 #endif // NODE_HPP

@@ -1,5 +1,5 @@
-set( DBoW3_INCLUDE_DIRS "/usr/local/include")
-set( DBoW3_LIBS "/usr/local/lib/libDBoW3.so")
+#set( DBoW3_INCLUDE_DIRS "/usr/local/include")
+#set( DBoW3_LIBS "/usr/local/lib/libDBoW3.so")
 
 add_executable( tako_test tako_test.cpp)
 TARGET_LINK_LIBRARIES(tako_test 
@@ -23,13 +23,11 @@ TARGET_LINK_LIBRARIES( keyframe_test
        # rtabmap_utilite 
         ${LIBRARIES_TAKO}
         tako
-        ${DBoW3_LIBS}
         )
 
 add_executable( feature_test feature_training.cpp)
 TARGET_LINK_LIBRARIES( feature_test 
 	${LIBRARIES_TAKO} 
-	${DBoW3_LIBS} 
         tako
 )
 #TARGET_LINK_LIBRARIES( feature_test

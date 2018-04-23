@@ -41,12 +41,12 @@ int main(int argc, char** argv)
        cv::waitKey(0);
    }
    */
-    //sqlite3_close(db);
-    DBoW3::Vocabulary vocab("./vocabulary.yml.gz");
+   // DBoW3::Vocabulary vocab;//("./vocabulary.yml.gz");
     tako::KeyPoints keypoints;
     keypoints.setVocabulary(nodes);
+    std::cout<< "setting Database " <<std::endl;
     DBoW3::Database db = keypoints.setDatabase();
-    std::cout <<"database info : " << db<< std::endl;
+    std::cout <<"database info : " << db << std::endl;
     //tako::Node temp; 
     /*for(std::vector<tako::Node>::iterator iter = nodes.begin(); iter!= nodes.end();++iter)
     {
@@ -66,16 +66,36 @@ int main(int argc, char** argv)
         }
         temp = (*iter);
     }*/
-    std::cout<<"compare image with database..." <<std::endl;
-    std::pair<int,double> pair;
-    for(tako::Node& node:nodes)
+    std::ofstream file;
+    file.open("test.txt", std::ios::out|std::ios::trunc);
+    if(!file)
     {
-        pair = keypoints.compare_Image2Database(node, db);
-        std::cout<<"image id : " << node.id_
-                << " simularity image : " << pair.first
-                << " score : " << pair.second
-                << std::endl<<std::endl<<std::endl;
-        pair = std::make_pair(node.id_, 0.0);
+        std::cout<<"file doesn't exist." <<std::endl;
     }
+    else
+    {
+        file << "database info : " <<std::endl;
+        file << db << std::endl;
+        std::cout<<"compare image with database..." <<std::endl;
+        for(tako::Node& node:nodes)
+        {
+            DBoW3::QueryResults ret ;
+            keypoints.compare_Image2Database(node, db, ret);
+            for(DBoW3::QueryResults::iterator iter = ret.begin(); iter != ret.end(); iter++)
+            {
+                if(iter->Score !=1.0)
+                {
+                    file <<"image id : " << node.id_
+                           << " simularity image : " << iter->Id
+                           << " score : " << iter->Score 
+                           <<std::endl;
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+    }
+    file.close();
     return 0;
 }

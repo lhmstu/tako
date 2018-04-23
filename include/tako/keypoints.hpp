@@ -22,7 +22,7 @@ namespace tako
             DBoW3::Database setDatabase();
             //void setDatabase();
             void setVocabulary(std::vector<tako::Node> &nodes);
-;           std::pair<int,double> compare_Image2Database(tako::Node &node, DBoW3::Database &db);
+            void compare_Image2Database(tako::Node &node, DBoW3::Database &db, DBoW3::QueryResults &ret);
             //void compare_Image2Database(tako::Node &node, DBoW3::Database &db)
             ~KeyPoints(){};
 

@@ -27,7 +27,7 @@ namespace tako
             std::cout<<"false to open database Image" <<std::endl;
         }
         int result = 0;
-        int i = 0;
+        unsigned int i = 0;
         while(true)
         {
             i++;
@@ -37,7 +37,7 @@ namespace tako
             {
                 int id = sqlite3_column_int(statement, 0 );
                 //ids_.push_back(id);
-                node.id_ = id;
+                node.id_ = id - 1;
                 int size = sqlite3_column_bytes(statement, 1); // Get the size of the vector
                 uchar* p = (uchar*)sqlite3_column_blob(statement, 1); // Get the pointer to data
                 std::vector<uchar> data(p, p + size); // Initialize the vector with the data 
@@ -53,7 +53,7 @@ namespace tako
             }
         }
         sqlite3_finalize(statement);
-        std::cout<<"load total " << i << "images"<<std::endl;
+        std::cout<<"load total " << i << " images"<<std::endl;
     }
 
     SQLiteDatabase::~SQLiteDatabase()

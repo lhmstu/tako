@@ -69,26 +69,21 @@ namespace tako
     }
 
     //void KeyPoints::compare_Image2Database(tako::Node &node, DBoW3::Database &db) 
-    std::pair<int,double> KeyPoints::compare_Image2Database(tako::Node &node,DBoW3::Database &db) 
+    void KeyPoints::compare_Image2Database(tako::Node &node, DBoW3::Database &db, DBoW3::QueryResults &ret) 
     {
         //std::cout<<"compare image with database..." <<std::endl;
-        //std::cout << "database info : " << db << std::endl;
         // compare
-        DBoW3::QueryResults ret;
         //std::cout<< " database info : "<< db_ << std::endl;
         db.query( node.descriptor_, ret, 4);
-        std::cout<< "searching image " << node.id_ << " return " <<ret<<std::endl;
-        for(DBoW3::QueryResults::iterator iter = ret.begin(); iter != ret.end(); ++iter)
-        {
-            if( std::abs(node.id_ - iter->Id) < 10)
-            {
-                continue;
-            }
-            else
-            {
-                return std::make_pair(iter->Id, iter->Score);
-                break;
-            }
-        }
+        //std::cout<< "searching image " << node.id_ << " return " <<ret<<std::endl;
+            //if( std::abs(node.id_ - iter->Id) < 10)
+            //{
+             //   continue;
+            //}
+            //else
+            //{
+            //    break;
+            //}
+        
     }
 }

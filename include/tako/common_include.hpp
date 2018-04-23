@@ -20,10 +20,10 @@ extern "C"
 #include <memory>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <set>
 #include <map>
 #include <unordered_map>
 #include <algorithm>
-
 
 #endif //COMMON_INCLUDE_H

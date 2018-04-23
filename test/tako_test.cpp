@@ -83,17 +83,18 @@ int main(int argc, char** argv)
             keypoints.compare_Image2Database(node, db, ret);
             for(DBoW3::QueryResults::iterator iter = ret.begin(); iter != ret.end(); iter++)
             {
-                if(iter->Score !=1.0)
+                if(true)
                 {
                     file <<"image id : " << node.id_
                            << " simularity image : " << iter->Id
-                           << " score : " << iter->Score 
-                           <<std::endl;
+                           << " score : " << iter->Score ;
                 }
                 else{
                     continue;
                 }
+                file<<std::endl;
             }
+            file<<std::endl;
         }
     }
     file.close();

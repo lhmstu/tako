@@ -1,8 +1,10 @@
 set (tako_files 
     config.cpp
-    database.cpp
+    object.cpp
     node.cpp
+    database.cpp
     keypoints.cpp
+    object_detect.cpp
 
     sqlite3.c
 )

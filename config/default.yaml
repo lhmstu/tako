@@ -9,4 +9,14 @@ keypoint_method: 1
 
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-keypoint_threshold: 0.11
+BoW_threshold: 0.11
+
+#Object detector
+# yolo2.cfg
+object_cfg: /home/alvin/lib/darknet/cfg/yolov2.cfg
+# yolo2.weigths
+object_model: /home/alvin/lib/darknet/yolov2.weights
+# coco.names
+object_classnames: /home/alvin/lib/darknet/data/coco.names
+#threshold
+min_confidence: 0.24

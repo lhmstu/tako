@@ -30,6 +30,11 @@ TARGET_LINK_LIBRARIES( feature_test
 	${LIBRARIES_TAKO} 
         tako
 )
+
+add_executable( object_test object_test.cpp)
+TARGET_LINK_LIBRARIES( object_test
+        tako
+)
 #TARGET_LINK_LIBRARIES( feature_test
 #        rtabmap_core
 #        rtabmap_utilite 

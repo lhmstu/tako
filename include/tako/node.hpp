@@ -2,18 +2,22 @@
 #define NODE_HPP
 
 #include "tako/common_include.hpp"
-
+#include "tako/object.hpp"
 namespace tako
 {
     class Node
     {
         public:
             int id_;
+            // keypoint
             cv::Mat image_; // image color
-            cv::Mat pose_; // pose
-
             cv::Mat descriptor_;
-            
+
+            // object detect
+            std::vector<tako::Object> node_object_;
+
+            // sequence
+            cv::Mat pose_; // pose
 
         public:
             Node (){}

@@ -5,6 +5,7 @@
 #include "tako/database.hpp"
 #include "tako/node.hpp"
 #include "tako/keypoints.hpp"
+#include "tako/object.hpp"
 
 
 int main(int argc, char** argv)

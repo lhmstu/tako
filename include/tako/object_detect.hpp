@@ -19,11 +19,15 @@ namespace tako
             float confidThr_;
             cv::dnn::Net net_; //?
             std::vector<cv::String> classNamesVec_;
+            
+            // object vector weights 
+            cv::Mat weights_ = cv::Mat::zeros(cv::Size(80,1), CV_32FC1);
 
             //input
         public:
             ObjectDetect();
-            std::vector<tako::Object> object_detect(cv::Mat frame);
+            std::vector<tako::Object> object_detect(tako::Node &node);
+            void getWeights();
             ~ObjectDetect();
     };
 }

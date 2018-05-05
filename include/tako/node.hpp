@@ -15,15 +15,18 @@ namespace tako
 
             // object detect
             std::vector<tako::Object> node_object_;
+            // object descriptor
+            cv::Mat Objdescriptor_;
 
             // sequence
             cv::Mat pose_; // pose
 
         public:
-            Node (){}
+            Node ();
             int getId(){return this->id_;};
             cv::Mat getImage(){return this->image_;};
             cv::Mat getPose(){return this->pose_;};
+            cv::Mat getDescriptor(){return this->Objdescriptor_;};
             ~Node (){}
     };
 }

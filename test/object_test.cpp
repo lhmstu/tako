@@ -29,12 +29,14 @@ int main(int argc, char** argv)
     {
         for(tako::Node& node:nodes)
         {
-            node.node_object_ = objectDetect.object_detect(node.image_);
+            node.node_object_ = objectDetect.object_detect(node);
             for(tako::Object& object:node.node_object_)
-            {    std::cout<< "node id : " << node.id_ 
-                        << " node_object : " <<object<<std::endl;
+            {    std::cout<< "node id : " << node.id_ <<std::endl;
+                 std::cout<< "node descritpor : " << node.getDescriptor() << std::endl;
+                 std::cout<< "node_object : " <<object<<std::endl;
             }
         }
+        objectDetect.getWeights();
     }
     return 0;
 }

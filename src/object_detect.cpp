@@ -126,8 +126,14 @@ namespace tako
             */
        }
        // map database scoring
-       objDatabase_.insert(std::pair<int, cv::Mat>(node.id_, object_descriptor_));
+       //objDatabase_.insert(std::pair<int, cv::Mat>(node.id_, object_descriptor_));
+       // store how many numbers of object in a frame
+       std::pair<int, cv::Mat> number;
+       number.first = node.id_;
+       number.second =  object_descriptor_;
+       objDatabase_.insert(std::pair<int, std::pair<int, cv::Mat> >(node_object.size(), number));
        node.Objdescriptor_ = object_descriptor_;
+       std::cerr << "node : " << node.id_ << " load finish !" << std::endl;
        return node_object;
     }
 
@@ -138,38 +144,53 @@ namespace tako
         std::cout <<" Total object type : " << cv::countNonZero(weights_) <<std::endl;
     }
 
-    cv::Mat ObjectDetect::gettf_idf()
+    void ObjectDetect::gettf_idf()
     {
         float total_image = tako::Config::get<float> ("total_image");
         cv::Mat tf = cv::Mat::zeros(cv::Size(80,1), CV_32FC1);
         cv::Mat idf = cv::Mat::zeros(cv::Size(80,1), CV_32FC1);
         cv::divide(weights_, cv::sum(weights_), tf);
+        std::cerr<<"tf : " << tf << std::endl;
         cv::divide(total_image, weights_, idf);
-        cv::log(idf, idf);
+        std::cerr<<"idf : " << idf << std::endl;
+        for(int i = 0; i < 80 ; i++)
+        {
+            if(tf.at<float>(0, i) == 0.0)
+            {
+                idf.at<float>(0, i) = 0.0;
+            }   
+            else
+            {
+                idf.at<float>(0, i) = std::log10(idf.at<float>(0, i));
+            }
+        }
         cv::multiply(tf, idf, tfIdf_);
-        return tfIdf_;
+        std::cerr << "tfidf : " << tfIdf_ <<std::endl;
     }
 
-    void ObjectDetect::objscoring(tako::Node &node, std::vector<std::pair<int, cv::Mat> > &scores_)
+    void ObjectDetect::objscoring(tako::Node &node, std::vector<std::pair<int, float> > &scores_)
     {
-        if(node.node_object_.size())
+        if(node.node_object_.empty())
         {
-            objDatabase::size_type entries = objDatabase_.count(node.id_);
-            objDatabase::iterator iter = objDatabase_.find(node.id_);
-            for(objDatabase::size_type i = 0; i != entries ; ++i)
-            {    
-                std::cout << "first " << iter->first << " second " << iter->second <<std::endl;
-                std::pair<int, cv::Mat> score;
-                score.first = iter->first;
-                cv::Mat compute;
-                compute = (weights_ * node.Objdescriptor_.t()) - (weights_ * iter->second.t());
-                score.second = 1.0 - ((0.5)* cv::abs(compute));
-                scores_.push_back(score);
-            }
+            std::cout << " ## node "<< node.id_ << " has no match ! " <<std::endl;
         }
         else
         {
-            std::cout << "node has no match ! " <<std::endl;
+            objDatabase::size_type entries = objDatabase_.count(node.node_object_.size());
+            objDatabase::iterator iter = objDatabase_.find(node.node_object_.size());
+            for(objDatabase::size_type i = 0; i != entries ; ++i)
+            {    
+                //std::cout << "first " << iter->second.first << " second " << iter->second.second <<std::endl;
+                std::pair<int, float> score;
+                score.first = iter->second.first;
+                cv::Mat compute;
+                compute = (tfIdf_ * node.Objdescriptor_.t()) - (tfIdf_ * iter->second.second.t());
+                score.second = compute.at<float>(0,0);
+                //std::cerr<<"compute : " << compute << std::endl;
+                score.second = 1.0 - ((0.5)* cv::abs(score.second));
+                scores_.push_back(score);
+                iter++;
+            }
         }
     }
     

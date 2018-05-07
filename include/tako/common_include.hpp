@@ -23,6 +23,7 @@ extern "C"
 // std
 #include <vector>
 #include <list>
+#include <cmath>
 #include <memory>
 #include <string>
 #include <iostream>

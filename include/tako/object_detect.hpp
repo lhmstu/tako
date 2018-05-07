@@ -25,7 +25,7 @@ namespace tako
 
             // object mapping
             cv::Mat tfIdf_;
-            typedef std::multimap<int, cv::Mat> objDatabase;
+            typedef std::multimap<int, std::pair<int, cv::Mat> > objDatabase;
             objDatabase objDatabase_;
             //std::vector<std::pair<int,cv::Mat> > scores_;
 
@@ -34,8 +34,8 @@ namespace tako
             ObjectDetect();
             std::vector<tako::Object> object_detect(tako::Node &node);
             void getWeights();
-            cv::Mat gettf_idf(); // return TF*IDF
-            void objscoring(tako::Node &node, std::vector<std::pair<int, cv::Mat> > &scores_);
+            void gettf_idf(); // return TF*IDF
+            void objscoring(tako::Node &node, std::vector<std::pair<int, float> > &scores_);
             //std::multimap<int, cv::String> getMultimap();
             ~ObjectDetect();
     };

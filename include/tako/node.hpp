@@ -18,14 +18,16 @@ namespace tako
             // object descriptor
             cv::Mat Objdescriptor_;
 
-            // sequence
-            cv::Mat pose_; // pose
+            // spatial
+            float x_; // pose
+            float y_; // pose
 
         public:
             Node ();
             int getId(){return this->id_;};
             cv::Mat getImage(){return this->image_;};
-            cv::Mat getPose(){return this->pose_;};
+            float get_x(){return this->x_;};
+            float get_y(){return this->y_;};
             cv::Mat getDescriptor(){return this->Objdescriptor_;};
             ~Node (){}
     };

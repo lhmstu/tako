@@ -68,7 +68,6 @@ namespace tako
         std::vector<tako::Object> node_object;
         for(int i = 0; i <detectionMat.rows; i++)
         {
-
             const int probability_index = 5; // the confidence probability
             const int probability_size = detectionMat.cols - probability_index;
 
@@ -113,8 +112,9 @@ namespace tako
                 cv::rectangle(node.image_, cv::Rect(p1, cv::Size(labelSize.width, labelSize.height + baseLine)), object_roi_color, cv::FILLED);
                 cv::putText(node.image_, label, p1 + cv::Point(0, labelSize.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0,0,0));
                 */
-                // output
+                // output class
                 cv::String className = objectClass < classNamesVec_.size() ? classNamesVec_[objectClass] : cv::format("unknown(%d)", objectClass);
+                // object parameter get 
                 item.storeVarious(className, confidence, width, height);
                 node_object.push_back(item);
             }
@@ -125,6 +125,8 @@ namespace tako
             cv::imshow("YOLO: Detections, " , node.image_);
             */
        }
+       // map database scoring
+       objDatabase_.insert(std::pair<int, cv::Mat>(node.id_, object_descriptor_));
        node.Objdescriptor_ = object_descriptor_;
        return node_object;
     }
@@ -132,8 +134,50 @@ namespace tako
     void ObjectDetect::getWeights()
     {
         std::cout << "Total weights : " << weights_ << std::endl;
+        std::cout << "Total object sum : " << cv::sum(weights_) << std::endl;
+        std::cout <<" Total object type : " << cv::countNonZero(weights_) <<std::endl;
     }
 
+    cv::Mat ObjectDetect::gettf_idf()
+    {
+        float total_image = tako::Config::get<float> ("total_image");
+        cv::Mat tf = cv::Mat::zeros(cv::Size(80,1), CV_32FC1);
+        cv::Mat idf = cv::Mat::zeros(cv::Size(80,1), CV_32FC1);
+        cv::divide(weights_, cv::sum(weights_), tf);
+        cv::divide(total_image, weights_, idf);
+        cv::log(idf, idf);
+        cv::multiply(tf, idf, tfIdf_);
+        return tfIdf_;
+    }
+
+    void ObjectDetect::objscoring(tako::Node &node, std::vector<std::pair<int, cv::Mat> > &scores_)
+    {
+        if(node.node_object_.size())
+        {
+            objDatabase::size_type entries = objDatabase_.count(node.id_);
+            objDatabase::iterator iter = objDatabase_.find(node.id_);
+            for(objDatabase::size_type i = 0; i != entries ; ++i)
+            {    
+                std::cout << "first " << iter->first << " second " << iter->second <<std::endl;
+                std::pair<int, cv::Mat> score;
+                score.first = iter->first;
+                cv::Mat compute;
+                compute = (weights_ * node.Objdescriptor_.t()) - (weights_ * iter->second.t());
+                score.second = 1.0 - ((0.5)* cv::abs(compute));
+                scores_.push_back(score);
+            }
+        }
+        else
+        {
+            std::cout << "node has no match ! " <<std::endl;
+        }
+    }
+    
+    /*std::multimap<int, cv::String> getMultimap()
+    {
+        return objDatabase_;
+    }
+    */
     ObjectDetect::~ObjectDetect()
     {
 

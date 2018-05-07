@@ -30,13 +30,24 @@ int main(int argc, char** argv)
         for(tako::Node& node:nodes)
         {
             node.node_object_ = objectDetect.object_detect(node);
-            for(tako::Object& object:node.node_object_)
+           /*for(tako::Object& object:node.node_object_)
             {    std::cout<< "node id : " << node.id_ <<std::endl;
                  std::cout<< "node descritpor : " << node.getDescriptor() << std::endl;
                  std::cout<< "node_object : " <<object<<std::endl;
             }
+           */
+            std::vector<std::pair<int, cv::Mat> > objscore;
+            objectDetect.objscoring(node, objscore);
+            std::cout << "node : " << node.id_  << " ; "
+                    << " obj similarity  " << std::endl;
+            for(std::pair<int,cv::Mat>& score:objscore)
+            {
+                std::cout<< "( sim id : " << score.first
+                        << " scoring : " << score.second <<" )" <<std::endl;
+            }
         }
         objectDetect.getWeights();
+        std::cout<< "tf-idf : " << objectDetect.gettf_idf()<<std::endl;
     }
     return 0;
 }

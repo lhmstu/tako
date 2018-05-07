@@ -3,7 +3,6 @@
 
 # database directory
 database_path: /home/alvin/yang_research/research.db
-
 # keypoint detect ORB=1 , SIFT=2, SUFT=3, Fast=4, total = 5 
 keypoint_method: 1
 
@@ -20,3 +19,5 @@ object_model: /home/alvin/lib/darknet/yolov2.weights
 object_classnames: /home/alvin/lib/darknet/data/coco.names
 #threshold
 min_confidence: 0.24
+#total_image for tf-idf
+total_image: 1323

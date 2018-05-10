@@ -33,6 +33,13 @@ TARGET_LINK_LIBRARIES( feature_test
 
 add_executable( object_test object_test.cpp)
 TARGET_LINK_LIBRARIES( object_test
+	${LIBRARIES_TAKO} 
+        tako
+)
+
+add_executable( spatial_test spatial_test.cpp)
+TARGET_LINK_LIBRARIES( spatial_test
+	${LIBRARIES_TAKO} 
         tako
 )
 #TARGET_LINK_LIBRARIES( feature_test

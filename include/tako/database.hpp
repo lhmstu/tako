@@ -30,6 +30,8 @@ namespace tako
             SQLiteDatabase(std::string& dbPath, char* sql);
             //std::vector<cv::Mat> setDatabaseImage();
             void setDatabaseImage(std::vector<tako::Node> &nodes);
+            void changeSql(char* sql);
+            void setDatabasePosition(std::vector<tako::Node> &nodes);
             ~SQLiteDatabase();
             
     };

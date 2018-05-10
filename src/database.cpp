@@ -56,6 +56,43 @@ namespace tako
         std::cout<<"load total " << i << " images"<<std::endl;
     }
 
+    void SQLiteDatabase::changeSql(char* sql)
+    {
+       sql_ = sql ; 
+    }
+
+    void SQLiteDatabase::setDatabasePosition(std::vector<tako::Node>& nodes)
+    {
+        
+        sqlite3_stmt* statement;
+        if(sqlite3_prepare_v2(db_, sql_, std::strlen(sql_), &statement, 0) != SQLITE_OK)
+        {
+            std::cout << " false to open database image " << std::endl;
+        }
+        int result = 0;
+        unsigned int i = 0;
+        for(tako::Node& node:nodes)
+        {
+            i ++ ;
+            result = sqlite3_step(statement);
+            if(result == SQLITE_ROW)
+            {
+               const void* data = sqlite3_column_blob(statement, 4);
+               int datasize = sqlite3_column_bytes(statement, 4) ;
+               if(data)
+               {
+                   std::memcpy(node.position_.data, data, datasize);
+               }
+            }
+            else
+            {
+                break;
+            }
+        }
+        sqlite3_finalize(statement);
+        std::cout<<"load total" << i << " node location " << std::endl;
+    }
+
     SQLiteDatabase::~SQLiteDatabase()
     {
         sqlite3_close(db_);

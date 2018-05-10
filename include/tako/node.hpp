@@ -19,15 +19,15 @@ namespace tako
             cv::Mat Objdescriptor_;
 
             // spatial
-            float x_; // pose
-            float y_; // pose
+            cv::Mat position_ = cv::Mat::zeros(cv::Size(4,3), CV_32FC1);
 
         public:
             Node ();
             int getId(){return this->id_;};
             cv::Mat getImage(){return this->image_;};
-            float get_x(){return this->x_;};
-            float get_y(){return this->y_;};
+            cv::Mat getPose(){return this->position_;};
+            float get_x(){return this->position_.at<float>(0,3);};
+            float get_y(){return this->position_.at<float>(1,3);};
             cv::Mat getDescriptor(){return this->Objdescriptor_;};
             ~Node (){}
     };

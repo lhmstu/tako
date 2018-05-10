@@ -1,4 +1,11 @@
 %YAML:1.0
+
+# dependency
+# sqlite3
+# opencv 3.4
+# darknet yolov2
+# BoW 3
+
 # data
 
 # database directory

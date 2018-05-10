@@ -56,6 +56,7 @@ int main(int argc, char **argv)
     }
     file.close();
     objectDetect.getWeights();
+    std::cerr<<"tfidf : " << objectDetect.tfIdf_ <<std::endl;
     //std::cout<< "tf-idf : " << objectDetect.gettf_idf()<<std::endl;
     return 0;
 }

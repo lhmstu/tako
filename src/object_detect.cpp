@@ -184,10 +184,18 @@ namespace tako
                 std::pair<int, float> score;
                 score.first = iter->second.first;
                 cv::Mat compute;
-                compute = (tfIdf_ * node.Objdescriptor_.t()) - (tfIdf_ * iter->second.second.t());
-                score.second = compute.at<float>(0,0);
+                //cv::Mat norm1;// node 
+                //cv::Mat norm2;// database 
+                //cv::normalize(node.Objdescriptor_, norm1, 1.0, 0.0, cv::NORM_L2);
+                //cv::normalize(iter->second.second, norm2, 1.0, 0.0, cv::NORM_L2);
+                //cv::multiply(tfIdf_, node.Objdescriptor_, norm1);
+                //cv::multiply(tfIdf_, iter->second.second, norm2);
+                //cv::subtract(norm1 , norm2, compute);
+                cv::subtract(node.Objdescriptor_ , iter->second.second, compute);
+                cv::multiply(compute, tfIdf_, compute);
+                score.second = cv::norm(compute, cv::NORM_L2);
+                score.second = 1.0 - (0.5*(score.second));
                 //std::cerr<<"compute : " << compute << std::endl;
-                score.second = 1.0 - ((0.5)* cv::abs(score.second));
                 scores_.push_back(score);
                 iter++;
             }

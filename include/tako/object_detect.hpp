@@ -17,7 +17,7 @@ namespace tako
             cv::String cfg_;
             cv::String model_;
             float confidThr_;
-            cv::dnn::Net net_; //?
+            cv::dnn::Net net_; 
             std::vector<cv::String> classNamesVec_;
             
             // object vector weights 
@@ -36,6 +36,7 @@ namespace tako
             void getWeights();
             void gettf_idf(); // return TF*IDF
             void objscoring(tako::Node &node, std::vector<std::pair<int, float> > &scores_);
+            double compare_Object2Object(tako::Node &node1, tako::Node &node2);
             //std::multimap<int, cv::String> getMultimap();
             ~ObjectDetect();
     };

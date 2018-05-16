@@ -30,14 +30,13 @@ namespace tako
         unsigned int i = 0;
         while(true)
         {
-            i++;
             tako::Node node;
             result = sqlite3_step(statement);
             if(result == SQLITE_ROW)
             {
                 int id = sqlite3_column_int(statement, 0 );
                 //ids_.push_back(id);
-                node.id_ = id - 1;
+                node.id_ = id; // 1 開始
                 int size = sqlite3_column_bytes(statement, 1); // Get the size of the vector
                 uchar* p = (uchar*)sqlite3_column_blob(statement, 1); // Get the pointer to data
                 std::vector<uchar> data(p, p + size); // Initialize the vector with the data 
@@ -46,6 +45,7 @@ namespace tako
                 node.image_ = cv::imdecode(data, CV_LOAD_IMAGE_COLOR);
 
                 nodes.push_back(node);
+                i++;
             }
             else
             {
@@ -90,7 +90,7 @@ namespace tako
             }
         }
         sqlite3_finalize(statement);
-        std::cout<<"load total" << i << " node location " << std::endl;
+        std::cout<<"load total " << i << " node location " << std::endl;
     }
 
     SQLiteDatabase::~SQLiteDatabase()

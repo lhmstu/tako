@@ -5,6 +5,7 @@ set (tako_files
     database.cpp
     keypoints.cpp
     object_detect.cpp
+    spatial.cpp
 
     sqlite3.c
 )

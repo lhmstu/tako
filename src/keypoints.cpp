@@ -55,6 +55,16 @@ namespace tako
         return vocab_.score(v1, v2);
     }
     
+    // spatial compare
+    double KeyPoints::compare_spatial2spatial(cv::Mat descriptor1, cv::Mat descriptor2)
+    {
+        //std::cout<<"compare image " <<node1.id_ <<" vs "<< node2.id_ <<std::endl;
+        DBoW3::BowVector v1;
+        vocab_.transform(descriptor1, v1);
+        DBoW3::BowVector v2;
+        vocab_.transform(descriptor2, v2);
+        return vocab_.score(v1, v2);
+    }
     //void KeyPoints::setDatabase()
     DBoW3::Database KeyPoints::setDatabase()
     {
@@ -74,7 +84,7 @@ namespace tako
         //std::cout<<"compare image with database..." <<std::endl;
         // compare
         //std::cout<< " database info : "<< db_ << std::endl;
-        db.query( node.descriptor_, ret, 4);
+        db.query( node.descriptor_, ret, 20);
         //std::cout<< "searching image " << node.id_ << " return " <<ret<<std::endl;
             //if( std::abs(node.id_ - iter->Id) < 10)
             //{

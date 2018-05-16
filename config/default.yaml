@@ -8,14 +8,14 @@
 
 # data
 
+#Keypoint module
 # database directory
-database_path: /home/alvin/yang_research/research.db
+database_path: /home/alvin/dataset/demo.db
 # keypoint detect ORB=1 , SIFT=2, SUFT=3, Fast=4, total = 5 
 keypoint_method: 1
-
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.11
+BoW_threshold: 0.05
 
 #Object detector
 # yolo2.cfg
@@ -27,4 +27,8 @@ object_classnames: /home/alvin/lib/darknet/data/coco.names
 #threshold
 min_confidence: 0.24
 #total_image for tf-idf
-total_image: 1323
+total_image: 452
+
+
+# spatial module
+K_means: 200

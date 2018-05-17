@@ -1,20 +1,99 @@
 #include "tako/spatial.hpp"
+/*struct NodeFind : public std::binary_function<tako::Node,tako::Node, bool>
+{
+    bool operator()(const tako::Node &node1, const tako::Node &node2) const
+    {
+        return node1.id_ == node2.id_;
+    }
+};
+*/
 namespace tako
 {
     Spatial::Spatial(std::vector<tako::Node> &nodes)
     {
+        int i = 0;
+        for(tako::Node &node1:nodes)
+        {
+            float dist = 100 ;
+            tako::Node node_temp1;
+            for(tako::Node &node2:nodes)
+            {
+                if(node1.id_ == node2.id_)
+                {
+                    continue;
+                }
+                else
+                {
+                    if(dist > (this->getDistXY(node1, node2)))
+                    {
+                        dist = this->getDistXY(node1, node2);
+                        node_temp1 = node2;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+            float dist_s = 99;
+            tako::Node node_temp2;
+            for(tako::Node &node3:nodes)
+            {
+                if(node3.id_ == node_temp1.id_ || node1.id_ == node3.id_)
+                {
+                    continue;
+                }
+                else
+                {
+                    if( dist_s > (this->getDistXY(node1,node3)))
+                    {
+                        dist_s = this->getDistXY(node1, node3);
+                        node_temp2 = node3;      
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+            graph_[i].push_back(node_temp1);
+            graph_[i].push_back(node_temp2);
+            i++;
+        }
+        std::cout << " spatial init finish ! " << std::endl;
+        this->getCluster();
+
     }
 
-    float Spatial::spaScoring(std::vector<tako::Node> &main_node, std::vector<tako::Node>& nodes)
+    void Spatial::getCluster()
     {
-        
+        for(int i = 0; i < k_ ; i++)
+        {
+            std::cout << " the node : " << i+1 << std::endl;
+            for(tako::Node node:graph_[i])
+            {
+                std::cout << " nearest is " << node.id_ << std::endl;
+            }
+            std::cout << std::endl;
+        }
     }
-    //k means
+
+    float Spatial::spatialScoring()
+    {
+
+    }
+
     float Spatial::getDistXY(tako::Node &node1, tako::Node &node2)
     {
         return std::sqrt((node1.position_.at<float>(0,3) - node2.position_.at<float>(0,3))*(node1.position_.at<float>(0,3) - node2.position_.at<float>(0,3))
                         + (node1.position_.at<float>(1,3) - node2.position_.at<float>(1,3))*(node1.position_.at<float>(1,3) - node2.position_.at<float>(1,3)) );
     }
+    Spatial::~Spatial()
+    {
+        
+    }
+/*
+    //k means
 
     int Spatial::clusterOfNode(tako::Node means[], tako::Node &node)
     {
@@ -71,10 +150,19 @@ namespace tako
         //tako::Node means[k_];
         int i = 0;
         // initial means of mass cluster
-        for( i = 0; i < k_ ; i++)
+        for( i =  0; i < k_  ; i++)
         {
-            means[i].position_.at<float>(0,3) = nodes[i].position_.at<float>(0,3);
-            means[i].position_.at<float>(1,3) = nodes[i].position_.at<float>(1,3);
+            if(nodes[i].position_.at<float>(0,3) == 0.0 && nodes[i].position_.at<float>(1,3) == 0.0)
+            {
+                i++ ;
+                continue;
+            }
+            else
+            {
+                means[i].position_.at<float>(0,3) = nodes[i].position_.at<float>(0,3);
+                means[i].position_.at<float>(1,3) = nodes[i].position_.at<float>(1,3);
+                i++;
+            }
         }
 
         int label = 0;
@@ -107,12 +195,66 @@ namespace tako
                 label = clusterOfNode( means, nodes[i]);
                 clusters[label].push_back(nodes[i]);
             }
+            std::cout << "new Var : " << newVar <<" Old var : " << oldVar << std::endl;
         }
+            // test output
+            for( label = 0; label < k_; label++)
+            {
+                std::cout << "the " << label + 1 << " cluster : " <<std::endl;
+                std::cout << "the mean : " <<"("<< means[label].position_.at<float>(0,3)<<" , " <<means[label].position_.at<float>(1,3)<<")"<< std::endl;
+                std::vector<tako::Node> t = clusters[label];
+                for( i = 0; i < t.size(); i++)
+                {
+                    std::cout <<"node id : "<< t[i].id_ <<" ("<< t[i].position_.at<float>(0,3) <<" , "<< t[i].position_.at<float>(1,3)<<")"<< std::endl;
+                }
+                std::cout << std::endl;
+            }
 
     }
 
-    Spatial::~Spatial()
+    cv::Mat Spatial::MeanDescriptor(tako::Node &node)
     {
+        //double value = 5000.0;
+        int key = 0; // which cluster
         
+        for( int i = 0; i < k_ ; i++)
+        {
+            double temp = std::sqrt((node.position_.at<float>(0,3) - means[i].position_.at<float>(0,3))*(node.position_.at<float>(0,3) - means[i].position_.at<float>(0,3))
+                                +(node.position_.at<float>(1,3) - means[i].position_.at<float>(1,3))*(node.position_.at<float>(1,3) - means[i].position_.at<float>(1,3))
+            );
+
+            if(temp < value)
+            {
+                key = i ;
+                value = temp ;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        
+       for(int i = 0; i < k_; i++)
+       {
+           
+       }
+
+        cv::Mat mean_descriptor;
+        std::vector<tako::Node> t = clusters[key];
+        for( int i = 0; i < t.size(); i++)
+        {
+            if( i == 0)
+            {
+                mean_descriptor = t[i].descriptor_;
+            }
+            else
+            {
+                mean_descriptor = t[i].descriptor_ + mean_descriptor;
+            }
+        }
+        cv::divide(mean_descriptor, t.size(), mean_descriptor);
+        return mean_descriptor;
     }
+*/
+
 }

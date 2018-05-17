@@ -7,7 +7,7 @@
 #include "tako/database.hpp"
 
 // K means
-#define k_ 80
+#define k_ 452
 namespace tako
 {
     class Spatial
@@ -15,15 +15,21 @@ namespace tako
         class Config;
 
        public:
-        std::vector<tako::Node> clusters[k_];
-        tako::Node means[k_];
+        std::vector<tako::Node> graph_[k_]; // start 0 
+        //std::vector<tako::Node> clusters[k_];
+        //tako::Node means[k_];
 
 
        public:
         Spatial(std::vector<tako::Node> &nodes) ;
-
-       //compute Dist between two node
         float getDistXY(tako::Node &node1, tako::Node &node2);
+        void getCluster();
+        
+        float spatialScoring();
+        ~Spatial();
+        /*
+       //compute Dist between two node
+        cv::Mat MeanDescriptor(tako::Node &node); // 算出最相近的cluster中的descritpor
         //according center of mass, decide this node be define which cluster
         int clusterOfNode(tako::Node means[], tako::Node &node);
         //acquire the cluster's Var
@@ -32,10 +38,7 @@ namespace tako
         tako::Node getMeans(std::vector<tako::Node> cluster);
         // k means kernel
         void KMeans(std::vector<tako::Node> &nodes);
-        
-        float spaScoring(std::vector<tako::Node> &main_node, std::vector<tako::Node>& nodes);
-
-        ~Spatial();
+        */
     };
 }
 

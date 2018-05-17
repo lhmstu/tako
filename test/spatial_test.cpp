@@ -5,6 +5,7 @@
 #include "tako/node.hpp"
 #include "tako/keypoints.hpp"
 #include "tako/object.hpp"
+#include "tako/spatial.hpp"
 
 int main(int argc, char** argv)
 {
@@ -22,6 +23,16 @@ int main(int argc, char** argv)
     database.changeSql(sql);
     database.setDatabasePosition(nodes);
 
+    // keypoint 
+    tako::KeyPoints keypoints;
+    keypoints.setVocabulary(nodes);
+    std::cout << "Setting Database "<< std::endl;
+    DBoW3::Database db = keypoints.setDatabase();
+    std::cout<< "database info : " << std::endl;
+    // spatial kmeans
+    tako::Spatial spatial(nodes);
+    //spatial.KMeans(nodes);
+
     std::ofstream file;
     file.open("spatial.txt", std::ios::out|std::ios::trunc);
     if(!file)
@@ -30,14 +41,31 @@ int main(int argc, char** argv)
     }
     else
     {   
-        for(tako::Node& node:nodes)
+       /* tako::Node *kp1 = nullptr;
+        tako::Node *kp2 = nullptr;
+        for(std::vector<tako::Node>::iter iter = nodes.begin(); iter!= nodes.end(); iter++)
         {
-            file << " image id : " << node.id_ << " position : " << std::endl;
-            file << node.position_ << std::endl;
+            if(iter == nodes.begin())
+            {
+               kp1 = iter ;
+               kp2 = iter + 1 ;
+            }
+            else
+            {
+                kp1 = iter - 1; 
+                kp2 = iter + 1;
+            }
+            cv::Mat now_descriptor = kp1->descriptor_ + iter->descriptor_ + kp2->descriptor_
+            cv::divide(now_descriptor, 3, now_descriptor);
+            cv::Mat descriptor = spatial.MeanDescriptor(node);
+            
+
+
         }
+        */
     }
     file.close();
-    std::cout<<"finish!"<<std::endl;
+    std::cout<<" spatial file finish!"<<std::endl;
 
     return 0;
 }

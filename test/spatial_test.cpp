@@ -7,6 +7,13 @@
 #include "tako/object.hpp"
 #include "tako/spatial.hpp"
 
+cv::Mat getDescriptor(tako::Node &node, tako::Node &node_early, tako::Node &node_after)
+{
+    cv::Mat descriptor = node.descriptor_ + node_early.descriptor_ + node_after.descriptor_;
+    cv::divide(descriptor, 3, descriptor);
+    return descriptor;
+}
+
 int main(int argc, char** argv)
 {
     tako::Config::setParameterFile(argv[1]);
@@ -41,28 +48,24 @@ int main(int argc, char** argv)
     }
     else
     {   
-       /* tako::Node *kp1 = nullptr;
-        tako::Node *kp2 = nullptr;
-        for(std::vector<tako::Node>::iter iter = nodes.begin(); iter!= nodes.end(); iter++)
+        int check = 1; // 計算數量
+        std::vector<tako::Node>::iterator iter = nodes.begin(); // after node;
+        tako::Node node_early1 ; 
+        for(tako::Node &node:nodes)
         {
-            if(iter == nodes.begin())
+            if(check == 1)
             {
-               kp1 = iter ;
-               kp2 = iter + 1 ;
+                node_early1 = node;
+                iter = iter + 1;
             }
             else
             {
-                kp1 = iter - 1; 
-                kp2 = iter + 1;
+                cv::Mat descriptor_1 = getDescriptor(node, node_early1, *iter); // 1 2 3 
+                cv::Mat descriptor_2 = spatial.getDescriptor(node); // spatial 123
             }
-            cv::Mat now_descriptor = kp1->descriptor_ + iter->descriptor_ + kp2->descriptor_
-            cv::divide(now_descriptor, 3, now_descriptor);
-            cv::Mat descriptor = spatial.MeanDescriptor(node);
-            
-
-
+            iter = iter + 1;
+            check ++ ;
         }
-        */
     }
     file.close();
     std::cout<<" spatial file finish!"<<std::endl;

@@ -16,6 +16,7 @@ namespace tako
 
        public:
         std::vector<tako::Node> graph_[k_]; // start 0 
+        tako::Node means[k_];
         //std::vector<tako::Node> clusters[k_];
         //tako::Node means[k_];
 
@@ -24,6 +25,8 @@ namespace tako
         Spatial(std::vector<tako::Node> &nodes) ;
         float getDistXY(tako::Node &node1, tako::Node &node2);
         void getCluster();
+        tako::Node getMean(std::vector<tako::Node> graph);
+        cv::Mat getDescriptor(tako::Node &node);
         
         float spatialScoring();
         ~Spatial();

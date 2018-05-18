@@ -62,7 +62,6 @@ namespace tako
         }
         std::cout << " spatial init finish ! " << std::endl;
         this->getCluster();
-
     }
 
     void Spatial::getCluster()
@@ -76,6 +75,56 @@ namespace tako
             }
             std::cout << std::endl;
         }
+    }
+    tako::Node Spatial::getMean(std::vector<tako::Node> graph)
+    {
+        int num = graph.size();
+        float meanX = 0;
+        float meanY = 0;
+        tako::Node temp;
+        for(int i = 0; i < num ; i++ )
+        {
+            meanX += graph[i].position_.at<float>(0,3);
+            meanY += graph[i].position_.at<float>(1,3);
+        }
+        temp.position_.at<float>(0,3) = meanX / num;
+        temp.position_.at<float>(1,3) = meanY / num;
+        return temp;
+    }
+
+    cv::Mat Spatial::getDescriptor(tako::Node &node)
+    {
+        int key;
+        tako::Node temp;
+        float dist = 100;
+        for(int i = 0; i < k_ ; i++)
+        {
+           temp = this->getMean(graph_[i]) ;
+           if( dist > this->getDistXY(node, temp))
+           {
+               key = i ;
+               dist = this->getDistXY(node, temp);
+           }
+           else{
+               continue;
+           }
+        }
+        cv::Mat descriptor;
+        int check = 0;
+        for(tako::Node &nodeTemp:graph_[key])
+        {
+           if( check == 0 ) 
+           {
+               descriptor = nodeTemp.descriptor_ ; 
+               check ++ ;
+           }
+           else
+           {
+               descriptor = descriptor + nodeTemp.descriptor_;
+           }
+        }
+        cv::divide(descriptor, graph_[key].size(), descriptor);
+        return descriptor;
     }
 
     float Spatial::spatialScoring()

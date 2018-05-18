@@ -20,7 +20,7 @@ namespace tako
             void create_database(std::vector<tako::Node> &nodes); // create and save
             double compare_Image2Image(tako::Node node1, tako::Node node2);
             //spatial compare
-            double compare_spatial2spatial(cv::Mat descriptor1, cv::Mat descritpor2);
+            double compare_spatial2spatial(std::list<tako::Node> cluster_test, std::vector<tako::Node> cluster_dest);
             DBoW3::Database setDatabase();
             //void setDatabase();
             void setVocabulary(std::vector<tako::Node> &nodes);

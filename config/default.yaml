@@ -15,7 +15,7 @@ database_path: /home/alvin/dataset/demo.db
 keypoint_method: 1
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.05
+BoW_threshold: 0.11
 
 #Object detector
 # yolo2.cfg

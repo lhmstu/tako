@@ -56,14 +56,20 @@ namespace tako
     }
     
     // spatial compare
-    double KeyPoints::compare_spatial2spatial(cv::Mat descriptor1, cv::Mat descriptor2)
+    double KeyPoints::compare_spatial2spatial(std::list<tako::Node> cluster_test, std::vector<tako::Node> cluster_dest)
     {
-        //std::cout<<"compare image " <<node1.id_ <<" vs "<< node2.id_ <<std::endl;
-        DBoW3::BowVector v1;
-        vocab_.transform(descriptor1, v1);
-        DBoW3::BowVector v2;
-        vocab_.transform(descriptor2, v2);
-        return vocab_.score(v1, v2);
+        double scoring = 0;
+        for(std::list<tako::Node>::iterator iter = cluster_test.begin(); iter != cluster_test.end(); iter++)
+        {
+            for(tako::Node &node:cluster_dest)
+            {
+                scoring = scoring + this->compare_Image2Image(*iter, node);
+            }
+        }
+        scoring = scoring / 9;
+
+        return scoring ;
+
     }
     //void KeyPoints::setDatabase()
     DBoW3::Database KeyPoints::setDatabase()

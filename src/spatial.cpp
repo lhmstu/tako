@@ -1,12 +1,5 @@
 #include "tako/spatial.hpp"
-/*struct NodeFind : public std::binary_function<tako::Node,tako::Node, bool>
-{
-    bool operator()(const tako::Node &node1, const tako::Node &node2) const
-    {
-        return node1.id_ == node2.id_;
-    }
-};
-*/
+
 namespace tako
 {
     Spatial::Spatial(std::vector<tako::Node> &nodes)
@@ -56,6 +49,7 @@ namespace tako
                     }
                 }
             }
+            graph_[i].push_back(node1);
             graph_[i].push_back(node_temp1);
             graph_[i].push_back(node_temp2);
             i++;
@@ -92,7 +86,7 @@ namespace tako
         return temp;
     }
 
-    cv::Mat Spatial::getDescriptor(tako::Node &node)
+    int Spatial::getSimiliary(tako::Node &node)
     {
         int key;
         tako::Node temp;
@@ -109,27 +103,34 @@ namespace tako
                continue;
            }
         }
-        cv::Mat descriptor;
+        return key;
+        /*cv::Mat descriptor;
         int check = 0;
         for(tako::Node &nodeTemp:graph_[key])
         {
+           cv::Mat norm1;
+           cv::normalize(nodeTemp.descriptor_, norm1, 1.0, 0.0, cv::NORM_L2);
            if( check == 0 ) 
            {
-               descriptor = nodeTemp.descriptor_ ; 
+              // descriptor = nodeTemp.descriptor_ ; 
+               descriptor = norm1 ; 
                check ++ ;
            }
            else
            {
-               descriptor = descriptor + nodeTemp.descriptor_;
+               //descriptor = descriptor + nodeTemp.descriptor_;
+               descriptor = descriptor + norm1; 
            }
         }
         cv::divide(descriptor, graph_[key].size(), descriptor);
-        return descriptor;
+        std::pair<int, cv::Mat> p = std::make_pair(key, descriptor); 
+        return p;
+        */
     }
 
-    float Spatial::spatialScoring()
+    std::vector<tako::Node> Spatial::getSpatial_node(int number_cluster)
     {
-
+        return graph_[number_cluster - 1];
     }
 
     float Spatial::getDistXY(tako::Node &node1, tako::Node &node2)

@@ -6,14 +6,6 @@
 #include "tako/keypoints.hpp"
 #include "tako/object.hpp"
 #include "tako/spatial.hpp"
-
-cv::Mat getDescriptor(tako::Node &node, tako::Node &node_early, tako::Node &node_after)
-{
-    cv::Mat descriptor = node.descriptor_ + node_early.descriptor_ + node_after.descriptor_;
-    cv::divide(descriptor, 3, descriptor);
-    return descriptor;
-}
-
 int main(int argc, char** argv)
 {
     tako::Config::setParameterFile(argv[1]);
@@ -41,30 +33,42 @@ int main(int argc, char** argv)
     //spatial.KMeans(nodes);
 
     std::ofstream file;
-    file.open("spatial.txt", std::ios::out|std::ios::trunc);
+    file.open("spatial_test.txt", std::ios::out|std::ios::trunc);
     if(!file)
     {
         std::cout << " file doesn't exist. " <<std::endl;
     }
     else
     {   
-        int check = 1; // 計算數量
-        std::vector<tako::Node>::iterator iter = nodes.begin(); // after node;
-        tako::Node node_early1 ; 
+        std::cout << " now load spaital.txt and insert ! " << std::endl;
+        std::list<tako::Node> cluster_test;
+        cv::Mat test;
         for(tako::Node &node:nodes)
         {
-            if(check == 1)
+            if(node.id_ == 1 )
             {
-                node_early1 = node;
-                iter = iter + 1;
+                test = node.descriptor_.clone() ;
             }
             else
             {
-                cv::Mat descriptor_1 = getDescriptor(node, node_early1, *iter); // 1 2 3 
-                cv::Mat descriptor_2 = spatial.getDescriptor(node); // spatial 123
+                test = test + node.descriptor_;
             }
-            iter = iter + 1;
-            check ++ ;
+            std::cout << test << std::endl;
+            
+            if(node.id_ == 1 || node.id_ == 2)
+            {
+                cluster_test.push_back(node);
+            }
+            else
+            {
+                cluster_test.push_back(node);
+                std::cout << cluster_test.size()<< std::endl;
+                std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(node.id_); // 比對方
+                double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                std::cout << "the node : " << node.id_ << " similarity node : " << cluster_aims[0].id_
+                           << " Scoring : " << spatial_Score <<std::endl;
+                cluster_test.pop_front();
+            }
         }
     }
     file.close();

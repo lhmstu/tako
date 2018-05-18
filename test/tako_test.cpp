@@ -6,7 +6,7 @@
 #include "tako/node.hpp"
 #include "tako/keypoints.hpp"
 #include "tako/object.hpp"
-
+#include "tako/spatial.hpp"
 
 int main(int argc, char** argv)
 {
@@ -23,26 +23,13 @@ int main(int argc, char** argv)
     sql = "SELECT * FROM Data";
     tako::SQLiteDatabase database(dbPath, sql);
     database.setDatabaseImage(nodes);
-    //finish
-    /*for(std::vector<cv::Mat>::iterator iter = images.begin(); iter!=images.end(); ++iter)
-    {
-        i++;
-        cv::namedWindow("Display windows");
-        cv::imshow("Display windows", *iter);
-        std::cout<<"picture number : " <<i << std::endl;
-        cv::waitKey(0);
-    }
-    */
-   //finish
-   /*for(std::vector<tako::Node>::iterator iter = nodes.begin(); iter!=nodes.end(); ++iter)
-   {
-       cv::namedWindow("Display windows");
-       cv::imshow("Display windows", iter->getImage());
-       std::cout<<"picture number : " << iter->getId() <<std::endl;
-       cv::waitKey(0);
-   }
-   */
-   // DBoW3::Vocabulary vocab;//("./vocabulary.yml.gz");
+
+    // load database position
+    sql = "SELECT * FROM Node";
+    database.changeSql(sql);
+    database.setDatabasePosition(nodes);
+
+    // keypoint
     tako::KeyPoints keypoints;
     keypoints.setVocabulary(nodes);
     std::cout<< "setting Database " <<std::endl;
@@ -67,9 +54,18 @@ int main(int argc, char** argv)
         }
         temp = (*iter);
     }*/
-    std::ofstream file;
-    file.open("keypoint.txt", std::ios::out|std::ios::trunc);
-    if(!file)
+    // keypoint
+    std::ofstream file_keypoint;
+    file_keypoint.open("keypoint.txt", std::ios::out|std::ios::trunc);
+
+    // spatial
+    tako::Spatial spatial(nodes);
+    std::ofstream file_spatial;
+    file_spatial.open("spatial.txt", std::ios::out|std::ios::trunc);
+    std::list<tako::Node> cluster_test;
+    int spatial_loop = 0;
+    
+    if(!file_keypoint)
     {
         std::cout<<"file doesn't exist." <<std::endl;
     }
@@ -77,16 +73,19 @@ int main(int argc, char** argv)
     {
         // threshold
         double BoW_Threshold = tako::Config::get<double> ("BoW_threshold");
-        file << "database info : " <<std::endl;
-        file << db << std::endl;
+        file_keypoint << "database info : " <<std::endl;
+        file_keypoint << db << std::endl;
         std::cout<<"compare image with database..." <<std::endl;
         int total_loop = 0;
         for(tako::Node& node:nodes)
         {
+            // keypoint test
             DBoW3::QueryResults ret ;
             keypoints.compare_Image2Database(node, db, ret);
             double keypoint_score = 0.0;
             int loopId = 0;
+
+
             for(DBoW3::QueryResults::iterator iter = ret.begin() + 1; iter != ret.end(); iter++)
             {
                 if( (int)std::abs(iter->Id - node.id_ ) >= 5)
@@ -109,24 +108,43 @@ int main(int argc, char** argv)
                 }
 
             }
+
+            //keypoint
             if(keypoint_score >= BoW_Threshold)
             {
                 if(loopId != 0)
                 {
                     total_loop ++;
                 }
-                file <<" image id : " << node.id_
+                file_keypoint <<" image id : " << node.id_
                        << " simularity image : " << loopId
-                       << " score : " << keypoint_score <<std::endl;
+                       << " keypoint_score : " << keypoint_score <<std::endl;
+                // spatial test
+                if(node.id_ ==1 || node.id_ == 2 )
+                {
+                    cluster_test.push_back(node);
+                }
+                else
+                {
+                    cluster_test.push_back(node);
+                    //std::cout << cluster_test.size()<< std::endl;
+                    std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                    double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                    file_spatial << "the node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                    cluster_test.pop_front();
+                }
             }
             else{
-                file << " image id : " << node.id_
+                file_keypoint << " image id : " << node.id_
                         << " not simularity image !" << std::endl;
             }
         }
-        file << " total_loop : " << total_loop<<std::endl;
+        file_keypoint << " keypoint total_loop : " << total_loop<<std::endl;
         std::cout << " threshold : " << BoW_Threshold <<std::endl;
     }
-    file.close();
+    file_spatial.close();
+
+    file_keypoint.close();
     return 0;
 }

@@ -26,9 +26,9 @@ namespace tako
         float getDistXY(tako::Node &node1, tako::Node &node2);
         void getCluster();
         tako::Node getMean(std::vector<tako::Node> graph);
-        cv::Mat getDescriptor(tako::Node &node);
+        int getSimiliary(tako::Node &node);
         
-        float spatialScoring();
+        std::vector<tako::Node> getSpatial_node(int number_cluster);
         ~Spatial();
         /*
        //compute Dist between two node

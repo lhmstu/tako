@@ -108,8 +108,7 @@ int main(int argc, char** argv)
                 }
 
             }
-
-            //keypoint
+            //spatial
             if(keypoint_score >= BoW_Threshold)
             {
                 if(loopId != 0)
@@ -119,26 +118,37 @@ int main(int argc, char** argv)
                 file_keypoint <<" image id : " << node.id_
                        << " simularity image : " << loopId
                        << " keypoint_score : " << keypoint_score <<std::endl;
-                // spatial test
-                if(node.id_ ==1 || node.id_ == 2 )
-                {
-                    cluster_test.push_back(node);
-                }
-                else
-                {
-                    cluster_test.push_back(node);
-                    //std::cout << cluster_test.size()<< std::endl;
-                    std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
-                    double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
-                    file_spatial << "the node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
-                    cluster_test.pop_front();
-                }
             }
-            else{
+            else
+            {
                 file_keypoint << " image id : " << node.id_
-                        << " not simularity image !" << std::endl;
+                       << " not simularity image !" << std::endl;
             }
+
+            if(node.id_ ==1 || node.id_ == 2  && keypoint_score >= BoW_Threshold)
+            {
+                cluster_test.push_back(node);
+                std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                std::cout <<"node id : " << node.id_ <<" ---- " << std::endl;
+                double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                file_spatial << "the node : " << node.id_ << " similarity node : " << loopId 
+                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                continue;
+            }
+
+            cluster_test.push_back(node);
+            if(node.id_ !=1 && node.id_ != 2 && keypoint_score >= BoW_Threshold)            
+            {
+                //keypoint
+                // spatial test
+                //std::cout << cluster_test.size()<< std::endl;
+                std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                std::cout <<"node id : "<< node.id_ <<" ---- " << std::endl;
+                double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                file_spatial << "the node : " << node.id_ << " similarity node : " << loopId 
+                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+            }
+            cluster_test.pop_front();
         }
         file_keypoint << " keypoint total_loop : " << total_loop<<std::endl;
         std::cout << " threshold : " << BoW_Threshold <<std::endl;

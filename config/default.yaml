@@ -11,11 +11,13 @@
 #Keypoint module
 # database directory
 database_path: /home/alvin/dataset/demo.db
+
 # keypoint detect ORB=1 , SIFT=2, SUFT=3, Fast=4, total = 5 
 keypoint_method: 1
+
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.09
+BoW_threshold: 0.07
 
 #Object detector
 # yolo2.cfg
@@ -24,11 +26,13 @@ object_cfg: /home/alvin/lib/darknet/cfg/yolov2.cfg
 object_model: /home/alvin/lib/darknet/yolov2.weights
 # coco.names
 object_classnames: /home/alvin/lib/darknet/data/coco.names
-#threshold
+# confidence_threshold
 min_confidence: 0.24
-#total_image for tf-idf
+# total_image for tf-idf
 total_image: 452
 
 
+
 # spatial module
-K_means: 200
+# threshold
+Spatial_Threshold: 0.01

@@ -47,7 +47,7 @@ namespace tako
 
     double KeyPoints::compare_Image2Image(tako::Node node1, tako::Node node2)
     {
-        std::cout<<"compare image " <<node1.id_ <<" vs "<< node2.id_ <<std::endl;
+        //std::cout<<"compare image " <<node1.id_ <<" vs "<< node2.id_ <<std::endl;
         DBoW3::BowVector v1;
         vocab_.transform(node1.descriptor_, v1);
         DBoW3::BowVector v2;

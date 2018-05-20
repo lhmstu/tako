@@ -180,6 +180,7 @@ int main(int argc, char** argv)
 
                         std::cout << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
                     }
+                    /*
                     else
                     {
                         file_total << " object node : "<< node.id_ << " has no object !!" <<std::endl;
@@ -187,6 +188,7 @@ int main(int argc, char** argv)
                         file_object <<" object node : " << node.id_ <<" has no object !! " << std::endl;
 
                     }
+                    */
                 }
             }
 

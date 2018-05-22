@@ -87,6 +87,7 @@ int main(int argc, char** argv)
     }
     else
     {
+        //threshold
         // keypoint threshold
         double keypoint_Threshold = tako::Config::get<double> ("BoW_threshold");
         file_keypoint << "database info : " <<std::endl;
@@ -98,6 +99,17 @@ int main(int argc, char** argv)
 
         // object threshold
         double object_confidence = tako::Config::get<double> ("min_confidence");
+
+        double thr[3] = {keypoint_Threshold, object_confidence, spatial_threshold};
+
+
+        // parameter setting 
+        float alpha = tako::Config::get<float> ("alpha");
+        float beta  = tako::Config::get<float> ("beta");
+        float gamma = tako::Config::get<float> ("gamma");
+        float W_th = tako::Config::get<float> ("threshold_weight");
+        // loop set
+        std::vector<int> loop[3];
 
         for(tako::Node& node:nodes)
         {

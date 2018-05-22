@@ -9,27 +9,36 @@ namespace tako
     {
       public:
         // compute values
-        double precision_;
-        double recall_;
         // define loop
-        int total_image_; // 需要直接定義完成
-        int total_loop_; // 需要直接定義完成
-        int true_positive_; // 發生正確 loop closure 
-        int false_positive_; // 發生錯誤 loop closure
-        int false_negative_; // 沒有偵測到的 loop closure 現實 loop - TP
+        int total_image_ ;//= tako::Config::get<int>("total_image"); // 需要直接定義完成
+        //int real_loop_ = tako::Config::get<int>("total_real_loop"); // 需要直接定義完成
+        int compute_loop_ ;
+        //int tp = tako::Config::get<int>("TP"); // 發生正確 loop closure 
+        //int fp; // 發生錯誤 loop closure
+        //int fn; // 沒有偵測到的 loop closure 現實 loop - TP
+
+        //final threshold
+        float alpha_ = 0;
+        float beta_ = 0;
+        float gamma_ = 0;
+        float Wth_ = 0;
 
         // threshold
-        float* thr = nullptr; // keypoint 1, object 2, spatial 3 
+        double* thr = nullptr; // keypoint 1, object 2, spatial 3 
         // 1 float keypoint_threshold_;
         // 2 float object_threshold_;
         // 3 float spatial_threshold_;
 
       public:
-        Verification(float* thr, int total_loop, int true_positive, int false_positive, int false_negative);
-        void getPrecision(){return precision_;};
-        void savefile();
-        void getRecall(){return recall_;};
-        
+        Verification(int total_image, int compute_loop);
+        ~Vertification();
+        void main(cv::Mat loop);
+        double getPrecision(int tp, int fp);
+        double getRecall(int tp, int fn);
+        int getTP(cv::Mat correct, cv::Mat loop);
+        cv::Mat correctLoop();
+        void savefile(double precision, double recall);
+        void savefile(float alpha, float beta, float gamma, float Wth, double precision, double recall);
     };
 } // namespace tako
 

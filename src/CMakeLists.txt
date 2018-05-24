@@ -6,6 +6,8 @@ set (tako_files
     keypoints.cpp
     object_detect.cpp
     spatial.cpp
+    combine.cpp
+    precision_recall.cpp
 
     sqlite3.c
 )

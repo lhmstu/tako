@@ -8,10 +8,17 @@ namespace tako
     class Verification
     {
       public:
+        //type of modules
+        // module 
+        //  1 : bow keypoint  
+        //  2 : object keypoint
+        //  3 : spatial 
+        //  4 : combine total
+        int module_ = 0;
         // compute values
         // define loop
         int total_image_ ;//= tako::Config::get<int>("total_image"); // 需要直接定義完成
-        //int real_loop_ = tako::Config::get<int>("total_real_loop"); // 需要直接定義完成
+        int real_loop_ ;//= tako::Config::get<int>("total_real_loop"); // 需要直接定義完成
         int compute_loop_ ;
         //int tp = tako::Config::get<int>("TP"); // 發生正確 loop closure 
         //int fp; // 發生錯誤 loop closure
@@ -30,9 +37,9 @@ namespace tako
         // 3 float spatial_threshold_;
 
       public:
-        Verification(int total_image, int compute_loop);
-        ~Vertification();
-        void main(cv::Mat loop);
+        Verification(int total_image, int compute_loop, int real_loop, float alpha, float beta, float gamma, float Wth);
+        ~Verification();
+        void run(int module, cv::Mat loop);
         double getPrecision(int tp, int fp);
         double getRecall(int tp, int fn);
         int getTP(cv::Mat correct, cv::Mat loop);

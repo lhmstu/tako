@@ -12,6 +12,8 @@
 #include "tako/object.hpp"
 // spatial module
 #include "tako/spatial.hpp"
+// total node
+#define Data 452
 
 int main(int argc, char** argv)
 {
@@ -99,17 +101,37 @@ int main(int argc, char** argv)
 
         // object threshold
         double object_confidence = tako::Config::get<double> ("min_confidence");
-
+        //collect threshold
         double thr[3] = {keypoint_Threshold, object_confidence, spatial_threshold};
 
 
-        // parameter setting 
+        //parameter setting 
+        // module setting
+        //  1 : keypoint module 
+        //  2 : object module 
+        //  3 : spatial module 
+        //  4 : final combine module 
+        int module = 0;
+        // precision & recall
+        int total_image = tako::Config::get<int> ("total_image");
+        int total_real_loop = tako::Config::get<int> ("total_real_loop");
+        int compute_loop = 0;
+        // combine
         float alpha = tako::Config::get<float> ("alpha");
         float beta  = tako::Config::get<float> ("beta");
         float gamma = tako::Config::get<float> ("gamma");
         float W_th = tako::Config::get<float> ("threshold_weight");
+        
         // loop set
+            // loop[0] bow keypoint
+            // loop[1] object 
+            // loop[2] spatial
         std::vector<int> loop[3];
+        // rows = nodeid , cols = similarity
+        cv::Mat computeLoop_keypoint(cv::Size(Data, Data), CV_8UC1);
+        cv::Mat computeLoop_spatial(cv::Size(Data, Data), CV_8UC1);
+        cv::Mat computeLoop_combine(cv::Size(Data, Data), CV_8UC1);
+
 
         for(tako::Node& node:nodes)
         {
@@ -212,16 +234,20 @@ int main(int argc, char** argv)
                 cluster_test.push_back(node);
                 std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
                 //std::cout <<"node id : " << node.id_ <<" ---- " << std::endl;
-                double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                double spatial_score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
 
-                file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                if(spatial_score >= spatial_threshold)
+                {
+                    file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
 
-                file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                    file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
                 
-                std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                    std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                
+                }
                 continue;
             }
             cluster_test.push_back(node);
@@ -232,16 +258,19 @@ int main(int argc, char** argv)
                 //std::cout << cluster_test.size()<< std::endl;
                 std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
                 //std::cout <<"node id : "<< node.id_ <<" ---- " << std::endl;
-                double spatial_Score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                double spatial_score = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
 
-                file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                if(spatial_score >= spatial_threshold)
+                {
+                    file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
 
-                file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                    file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
                 
-                std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                           << " spatial_Scoring : " << spatial_Score <<std::endl;
+                    std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                }
             }
             else
             {

@@ -37,14 +37,15 @@ total_image: 452
 # threshold
 Spatial_Threshold: 0.01
 
-# final scoring 
-alpha: 
-beta: 
-gamma:
-threshold_weight: 
+# final scoring
+# a+b+g = 1 
+alpha: 0.3
+beta: 0.3
+gamma: 0.4
+threshold_weight: 0.5
 
 # precision recall this database 
 #total_image: 452
-total_real_loop: 
+total_real_loop: 200
  
 

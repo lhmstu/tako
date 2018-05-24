@@ -2,6 +2,9 @@
 #define COMMON_INCLUDE_HPP
 
 // define the commomly included file to avoid a long include list
+//total node
+#define Data 452 
+
 // SQLite3 library
 extern "C"
 {

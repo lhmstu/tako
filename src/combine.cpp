@@ -12,41 +12,47 @@ namespace tako
             loop[1] object number 
             loop[2] spatial number
         */
-        int keypointLoop = loop[0].size();
-        int objectSame = loop[1].size();
-        int spatialLoop = loop[2].size();
-        prob_key = (double)(keypointLoop) / (double)(total_image);
-        prob_obj = (double)(objectSame) / (double)(total_image);
-        prob_spatial = prob_key * (double)(spatialLoop * 2) / (double)(total_image * 2);
+        //int keypointLoop_ = loop[0].size();
+        //int objectSame_ = loop[1].size();
+        //int spatialLoop_ = loop[2].size();
+        //prob_key = (double)(keypointLoop_) / (double)(total_image);
+        //prob_obj = (double)(objectSame_) / (double)(total_image);
+        //prob_spatial = prob_key * (double)(spatialLoop_ * 2) / (double)(total_image * 2);
 
-        int keyspatial_obj = 0;
+        int keyspatial_obj_ = 0;
+        int keyspatial_nobj_ = 0;
+        int keyspatial_ = 0;
         for(std::vector<int>::iterator iter_key = loop[0].begin(); iter_key!= loop[0].end(); iter_key++)
         {
-            for(std::vector<int>::iterator iter_spa = loop[2].begin(); iter_spa!= loop[2].end(); iter_spa++)
+            std::vector<int>::iterator iter_spa = std::find(loop[2].begin(), loop[2].end(), *iter_key);
+            if(iter_spa != loop[2].end())
             {
-                if( *iter_key == *iter_spa)
+                std::vector<int>::iterator iter_obj = std::find(loop[1].begin(), loop[1].end(), *iter_key);
+                if(iter_obj != loop[1].end())
                 {
-                    std::vector<int>::iterator iter_obj = std::find(loop[1].begin(), loop[1].end(), *iter_key);
-                    if(iter_obj != loop[1].end())
-                    {
-                        keyspatial_obj ++;
-                    }
+                    keyspatial_obj_ ++;
                 }
+                else
+                {
+                    keyspatial_nobj_ ++;
+                }
+                keyspatial_ ++;
             }
         }
-
-        condition_keyspatial_nobj = 0;
-        condition_keyspatial_obj = 0;
+        
+        condition_keyspatial_nobj = (double)keyspatial_nobj_/(double)keyspatial_;
+        condition_keyspatial_obj = (double)keyspatial_obj_/(double)keyspatial_;
     }
 
     void Combine::resetProb()
     {
-        prob_key = 0 ;
-        prob_obj = 0 ;
-        prob_spatial = 0;
+        //prob_key = 0 ;
+        //prob_obj = 0 ;
+        //prob_spatial = 0;
         condition_keyspatial_nobj = 0 ;
         condition_keyspatial_obj = 0;
     }
+    // main run 
     bool Combine::run(double keypoint_score, bool object_score, float spatial_score)
     {
         if(alpha && beta && gamma && Wth)
@@ -56,13 +62,12 @@ namespace tako
         else
         {
             std::cerr<<"Init error !! Check three parameters is set " <<std::endl;
-            exit -1 ;
         }
 
         std::cerr<<"setting Threshold..." <<std::endl;
 
         double threshold = this->setThreshold();
-        double score = this->compute_scoring(keypoint_score, object_score, spatial_score)
+        double score = this->compute_scoring(keypoint_score, object_score, spatial_score);
 
         return this->checkLoop(score, threshold);
     }
@@ -104,7 +109,7 @@ namespace tako
         }
     }
     
-    Comine::~Combine()
+    Combine::~Combine()
     {
 
     }

@@ -12,6 +12,11 @@
 #include "tako/object.hpp"
 // spatial module
 #include "tako/spatial.hpp"
+// combine module
+#include "tako/combine.hpp"
+//precision recall
+#include "tako/precision_recall.hpp"
+
 // total node
 #define Data 452
 
@@ -64,7 +69,7 @@ int main(int argc, char** argv)
     // keypoint file
     std::ofstream file_keypoint;
     file_keypoint.open("keypoint.txt", std::ios::out|std::ios::trunc);
-    int keypoin_loop = 0;
+    int keypoint_loop = 0;
 
     // object file
     std::ofstream file_object;
@@ -97,7 +102,7 @@ int main(int argc, char** argv)
         std::cout<<"compare image with database..." <<std::endl;
 
         // spatial threshold
-        double spatial_threshold = tako::Config::get<double> ("Spatial_threshold");
+        double spatial_threshold = tako::Config::get<double> ("Spatial_Threshold");
 
         // object threshold
         double object_confidence = tako::Config::get<double> ("min_confidence");
@@ -127,11 +132,13 @@ int main(int argc, char** argv)
             // loop[1] object 
             // loop[2] spatial
         std::vector<int> loop[3];
-        // rows = nodeid , cols = similarity
-        cv::Mat computeLoop_keypoint(cv::Size(Data, Data), CV_8UC1);
-        cv::Mat computeLoop_spatial(cv::Size(Data, Data), CV_8UC1);
-        cv::Mat computeLoop_combine(cv::Size(Data, Data), CV_8UC1);
 
+        // rows = nodeid , cols = similarity
+        cv::Mat computeLoop_keypoint = cv::Mat::zeros(cv::Size(Data, Data), CV_8UC1);
+        cv::Mat computeLoop_spatial = cv::Mat::zeros(cv::Size(Data, Data), CV_8UC1);
+        cv::Mat computeLoop_combine = cv::Mat::zeros(cv::Size(Data, Data), CV_8UC1);
+
+        // precision recall
 
         for(tako::Node& node:nodes)
         {
@@ -173,8 +180,14 @@ int main(int argc, char** argv)
             {
                 if(loopId != 0)
                 {
-                    keypoin_loop ++;
+                    keypoint_loop ++;
                 }
+
+                // combine
+                loop[0].push_back(node.id_);
+                // precision recall
+                computeLoop_keypoint.at<int> (node.id_ - 1, loopId - 1) = 1;
+
                 file_total <<" *keypoint node : " << node.id_
                        << " simularity image : " << loopId
                        << " keypoint_score : " << keypoint_score <<std::endl;
@@ -238,14 +251,22 @@ int main(int argc, char** argv)
 
                 if(spatial_score >= spatial_threshold)
                 {
+                    // compute spatial loop
+                    spatial_loop ++ ;
+
+                    // combine
+                    loop[2].push_back(node.id_);
+                    // precision recall
+                    computeLoop_spatial.at<int>(node.id_ - 1 , loopId - 1) = 1 ;
+
                     file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
 
                     file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
                 
                     std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
                 
                 }
                 continue;
@@ -262,14 +283,22 @@ int main(int argc, char** argv)
 
                 if(spatial_score >= spatial_threshold)
                 {
+                    // compute spatial loop
+                    spatial_loop ++ ;
+
+                    //combine
+                    loop[2].push_back(node.id_);
+                    // precision recall
+                    computeLoop_spatial.at<int>(node.id_ - 1, loopId - 1) = 1 ;
+
                     file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
 
                     file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
                 
                     std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                               << " spatial_Scoring : " << spatial_Score <<std::endl;
+                               << " spatial_Scoring : " << spatial_score <<std::endl;
                 }
             }
             else
@@ -287,12 +316,22 @@ int main(int argc, char** argv)
             std::cout << " ------ " <<std::endl;
 
         }
-        file_total << " keypoint loop : " << keypoin_loop <<std::endl;
+        file_total << " keypoint loop : " << keypoint_loop <<std::endl;
         file_total << " keypoint threshold : " << keypoint_Threshold <<std::endl;
 
-        file_keypoint << " keypoint loop : " << keypoin_loop <<std::endl;
-        std::cout << " keypoint loop : " << keypoin_loop <<std::endl;
+        file_keypoint << " keypoint loop : " << keypoint_loop <<std::endl;
+        std::cout << " keypoint loop : " << keypoint_loop <<std::endl;
         std::cout << " keypoint threshold : " << keypoint_Threshold <<std::endl;
+
+        //precision recall 
+        // bowkeypoint precision
+        tako::Verification BoW_precision(thr, total_image, keypoint_loop, total_real_loop);
+        BoW_precision.run(1, computeLoop_keypoint);
+        std::cout<< " finish keypoint precision & recall !" << std::endl;
+        // spatial precision
+        tako::Verification Spatial_precision(thr, total_image, spatial_loop, total_real_loop);
+        Spatial_precision.run(3, computeLoop_spatial);
+        std::cout << " finish spatial precision & recall ! " << std::endl;
     }
     // close file 
     file_object.close();

@@ -27,7 +27,7 @@ namespace tako
             
             double setThreshold();
             //run
-            bool run(double keypoint_score, bool object_score, float spatial_score);
+            bool run(double keypoint_score, bool object_score, double spatial_score);
             double compute_scoring(double keypoint, bool object, double spatial);
             bool checkLoop(double score, double threshold);
             ~Combine();

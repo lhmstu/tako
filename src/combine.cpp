@@ -53,7 +53,7 @@ namespace tako
         condition_keyspatial_obj = 0;
     }
     // main run 
-    bool Combine::run(double keypoint_score, bool object_score, float spatial_score)
+    bool Combine::run(double keypoint_score, bool object_score, double spatial_score)
     {
         if(alpha && beta && gamma && Wth)
         {

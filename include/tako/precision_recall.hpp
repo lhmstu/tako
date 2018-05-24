@@ -31,13 +31,14 @@ namespace tako
         float Wth_ = 0;
 
         // threshold
-        double* thr = nullptr; // keypoint 1, object 2, spatial 3 
+        double* thr_ = nullptr; // keypoint 1, object 2, spatial 3 
         // 1 float keypoint_threshold_;
         // 2 float object_threshold_;
         // 3 float spatial_threshold_;
 
       public:
-        Verification(int total_image, int compute_loop, int real_loop, float alpha, float beta, float gamma, float Wth);
+        Verification(double* thr, int total_image, int compute_loop, int real_loop);
+        Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha, float beta, float gamma, float Wth);
         ~Verification();
         void run(int module, cv::Mat loop);
         double getPrecision(int tp, int fp);

@@ -2,8 +2,16 @@
 
 namespace tako
 {
-    Verification::Verification(int total_image, int compute_loop, int real_loop, float alpha = 0, float beta = 0,float gamma = 0, float Wth = 0)
+    Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop)
     {
+        thr_ = thr ;
+        total_image_ = total_image;
+        compute_loop_ = compute_loop;
+        real_loop_ = real_loop;
+    }
+    Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha = 0, float beta = 0,float gamma = 0, float Wth = 0)
+    {
+        thr_ = thr ;
         total_image_ = total_image;
         compute_loop_ = compute_loop;
         real_loop_ = real_loop;
@@ -14,8 +22,10 @@ namespace tako
     }
     void Verification::run(int module, cv::Mat computeLoop)
     {
+        std::cerr << " start module " << module << "precision & recall ! " << std::endl;
         module_ = module ;
         int tp = this->getTP(this->correctLoop(), computeLoop);
+        std::cerr << " tp : " << tp << std::endl;
         int fp = compute_loop_ - tp ; 
         int fn = real_loop_ - tp ;
         double precision =  this->getPrecision(tp, fp);
@@ -55,24 +65,26 @@ namespace tako
         }
         else
         {
-            if(module == 4)
+            if(module_ == 4)
             {
                 file_ << "module : Final combine " << std::endl;
             }
             file_ << "Loop closure test ..." << std::endl;
             file_ << "threshold " << std::endl;
-            file_ << " -keypoint_threshold : " << *thr <<std::endl;
-            file_ << " -object_threshold : " << *(thr + 1) << std::endl;
-            file_ << " -spatial_threshold : " << *(thr + 2) << std::endl;
+            file_ << " -keypoint_threshold : " << *thr_ <<std::endl;
+            file_ << " -object_threshold : " << *(thr_ + 1) << std::endl;
+            file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
 
             file_ << "final threshold parameter : " << std::endl;
             file_ << " -alpha: " << alpha <<", "<<"beta: "<<beta <<", "
                 <<"gamma: "<<gamma<< ", Wth: " << Wth << std::endl;
+            file_ << std::endl;
 
             file_ << "Total image : " << total_image_ << std::endl;
             file_ << "output values ..." << std::endl;
             file_ << "precision" << "," << "recall" << std::endl;
             file_ << precision <<","<< recall << std::endl;
+            file_ << std::endl;
         }
 
         file_.close();
@@ -89,24 +101,26 @@ namespace tako
         }
         else
         {
-            if(module == 1)
+            if(module_ == 1)
             {
                 file_ << "module : BoW keypoint " << std::endl;
             }
-            if(module == 3)
+            if(module_ == 3)
             {
                 file_ << "module : Spatial descriptor " << std::endl;
             }
             file_ << "Loop closure test ..." << std::endl;
             file_ << "threshold " << std::endl;
-            file_ << " -keypoint_threshold : " << *thr <<std::endl;
-            file_ << " -object_threshold : " << *(thr + 1) << std::endl;
-            file_ << " -spatial_threshold : " << *(thr + 2) << std::endl;
+            file_ << " -keypoint_threshold : " << *thr_ <<std::endl;
+            file_ << " -object_threshold : " << *(thr_ + 1) << std::endl;
+            file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
+            file_ << std::endl;
 
             file_ << "Total image : " << total_image_ << std::endl;
             file_ << "output values ..." << std::endl;
             file_ << "precision" << "," << "recall" << std::endl;
             file_ << precision <<","<< recall << std::endl;
+            file_ << std::endl;
         }
 
         file_.close();
@@ -115,7 +129,10 @@ namespace tako
 
     int Verification::getTP(cv::Mat correct, cv::Mat loop)
     {
-        return (int)correct.dot(loop);
+        cv::Mat dst;
+        cv::multiply(correct, loop, dst);
+        int sum = cv::sum(dst)[0];
+        return sum;
         
     }
     // need true positive
@@ -123,7 +140,7 @@ namespace tako
     cv::Mat Verification::correctLoop()
     {
         // rows = nodeid , cols = similarity
-        cv::Mat correctLoop(cv::Size(Data, Data), CV_8UC1);
+        cv::Mat correctLoop = cv::Mat::zeros(cv::Size(Data, Data), CV_8UC1);
         for(int i = 0; i < correctLoop.rows; i++)
         {
             switch(i + 1)

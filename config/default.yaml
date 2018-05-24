@@ -17,7 +17,7 @@ keypoint_method: 1
 
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.03
+BoW_threshold: 0.09
 
 #Object detector
 # yolo2.cfg

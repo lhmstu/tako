@@ -6,7 +6,7 @@ namespace tako
 
     }
 
-    void Combine::setProb(int total_image, std::vector<int> loop[])
+    void Combine::setProb(std::vector<int> loop[])
     {
         /*  loop[0] keypoint number
             loop[1] object number 
@@ -39,9 +39,13 @@ namespace tako
                 keyspatial_ ++;
             }
         }
-        
         condition_keyspatial_nobj = (double)keyspatial_nobj_/(double)keyspatial_;
         condition_keyspatial_obj = (double)keyspatial_obj_/(double)keyspatial_;
+        std::cout << " --keyspatial : " << keyspatial_ << std::endl;
+        std::cout << " --keyspatial_nobj : " << keyspatial_nobj_ << std::endl;
+        std::cout << " --keyspatial_obj : " << keyspatial_obj_ << std::endl;
+        std::cout << " --condition_nobj : " << condition_keyspatial_nobj << std::endl;
+        std::cout << " --condition_obj : " << condition_keyspatial_obj << std::endl;
     }
 
     void Combine::resetProb()
@@ -57,17 +61,18 @@ namespace tako
     {
         if(alpha && beta && gamma && Wth)
         {
-            std::cerr<<"Combint init correct!" <<std::endl;
+            //std::cerr<<"Combint init correct...." <<std::endl;
         }
         else
         {
             std::cerr<<"Init error !! Check three parameters is set " <<std::endl;
         }
 
-        std::cerr<<"setting Threshold..." <<std::endl;
+        //std::cerr<<" setting Threshold..." <<std::endl;
 
         double threshold = this->setThreshold();
         double score = this->compute_scoring(keypoint_score, object_score, spatial_score);
+        //bool check  = this->checkLoop(score, threshold);
 
         return this->checkLoop(score, threshold);
     }
@@ -77,6 +82,7 @@ namespace tako
     {
         double threshold = 0;
         threshold = (1 - Wth) * condition_keyspatial_nobj + Wth * condition_keyspatial_obj;
+        std::cout << " -combine threshold : " << threshold << std::endl;
 
         
         return threshold;
@@ -87,11 +93,13 @@ namespace tako
        double score = 0 ;
        if(object)
        {
-         score = (alpha*keypoint) + (beta*spatial) + (gamma*object) ;
+            score = (alpha*keypoint) + (beta*spatial) + (gamma*object) ;
+            std::cout << " -obj combine score : " << score << std::endl;
        }
        else
        {
-           score = (1 - gamma) * keypoint + gamma * spatial;
+            score = (alpha / (alpha + beta)) * keypoint + (beta / (alpha + beta))* spatial;
+            std::cout << " -nobj combine score : " << score << std::endl;
        }
 
        return score ;

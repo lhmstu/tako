@@ -22,7 +22,7 @@ namespace tako
         public:
             //set parameter
             Combine(float alpha, float beta, float gamma, float Wth);
-            void setProb(int total_image, std::vector<int> loop[]);
+            void setProb(std::vector<int> loop[]);
             void resetProb();
             
             double setThreshold();

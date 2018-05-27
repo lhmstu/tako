@@ -17,7 +17,7 @@ keypoint_method: 1
 
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.09
+BoW_threshold: 0.11
 
 #Object detector
 # yolo2.cfg
@@ -39,10 +39,10 @@ Spatial_Threshold: 0.01
 
 # final scoring
 # a+b+g = 1 
-alpha: 0.3
+alpha: 0.4
 beta: 0.3
-gamma: 0.4
-threshold_weight: 0.5
+gamma: 0.3
+threshold_weight: 0.99 # 看中 物件的程度
 
 # precision recall this database 
 #total_image: 452

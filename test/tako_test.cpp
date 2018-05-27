@@ -69,7 +69,6 @@ int main(int argc, char** argv)
     // keypoint file
     std::ofstream file_keypoint;
     file_keypoint.open("keypoint.txt", std::ios::out|std::ios::trunc);
-    int keypoint_loop = 0;
 
     // object file
     std::ofstream file_object;
@@ -79,21 +78,26 @@ int main(int argc, char** argv)
     std::ofstream file_spatial;
     file_spatial.open("spatial.txt", std::ios::out|std::ios::trunc);
     std::list<tako::Node> cluster_test;
-    int spatial_loop = 0;
 
+    // combine file 
+    std::ofstream file_combine;
+    file_combine.open("combine.txt", std::ios::out|std::ios::trunc);
     // total file
     std::ofstream file_total;
     file_total.open("tako.txt", std::ios::out|std::ios::trunc);
-    // store 
 
-    
-    
-    if(!file_keypoint || !file_spatial || !file_object || !file_total)
+    // store 
+    if(!file_keypoint || !file_spatial || !file_object || !file_total || !file_combine)
     {
         std::cout<<"file doesn't exist." <<std::endl;
     }
     else
     {
+        // loop size 
+        int combine_loop = 0 ;
+        int keypoint_loop = 0;
+        int spatial_loop = 0;
+
         //threshold
         // keypoint threshold
         double keypoint_Threshold = tako::Config::get<double> ("BoW_threshold");
@@ -120,12 +124,12 @@ int main(int argc, char** argv)
         // precision & recall
         int total_image = tako::Config::get<int> ("total_image");
         int total_real_loop = tako::Config::get<int> ("total_real_loop");
-        int compute_loop = 0;
         // combine
         float alpha = tako::Config::get<float> ("alpha");
         float beta  = tako::Config::get<float> ("beta");
         float gamma = tako::Config::get<float> ("gamma");
         float W_th = tako::Config::get<float> ("threshold_weight");
+        tako::Combine combine(alpha, beta, gamma, W_th);
         
         // loop set
             // loop[0] bow keypoint
@@ -318,25 +322,137 @@ int main(int argc, char** argv)
         }
         file_total << " keypoint loop : " << keypoint_loop <<std::endl;
         file_total << " keypoint threshold : " << keypoint_Threshold <<std::endl;
+        file_total << " spatial loop : " << spatial_loop << std::endl;
 
         file_keypoint << " keypoint loop : " << keypoint_loop <<std::endl;
-        std::cout << " keypoint loop : " << keypoint_loop <<std::endl;
-        std::cout << " keypoint threshold : " << keypoint_Threshold <<std::endl;
 
+        std::cout << " ------------ " << std::endl;
+
+        std::cout <<" loop[0].size= " << loop[0].size() << std::endl;
+        std::cout <<" loop[2].size= " << loop[2].size() << std::endl;
         //precision recall 
+        for(tako::Node& node:nodes)
+        {   
+            // score
+            bool objectScore = false ;
+            double keypointScore = 0 ;
+            double spatialScore = 0 ;
+
+            // object team 
+            if( loop[1].size() > 0 )
+            {
+                loop[1].clear();
+            }
+            std::vector<std::pair<int, float> > objscore;
+            objectDetect.objscoring(node, objscore);
+            for(std::pair<int,float> &score:objscore)
+            {
+                if((int)score.second == 1 )
+                {
+                    loop[1].push_back(score.first);
+                }
+            }
+            if( loop[1].size() > 0)
+            {
+                objectScore = true ;
+            }
+
+            //keypoint scoring
+            DBoW3::QueryResults ret ;
+            keypoints.compare_Image2Database(node, db, ret);
+            int loopId = 0;
+            for(DBoW3::QueryResults::iterator iter = ret.begin() + 1; iter != ret.end(); iter++)
+            {
+                if( (int)std::abs(iter->Id - node.id_ ) >= 5)
+                {
+                    //std::cout<< "| | : " << (int)std::abs(iter->Id - node.id_) <<std::endl;
+                    if( iter->Score > keypointScore)
+                    {
+                        //std::cout << iter->Id << " , " << node.id_ <<std::endl;
+                        loopId = iter->Id;
+                        keypointScore = iter->Score;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+
+            }
+
+            // spatial scoring
+            if((node.id_ == 1 || node.id_ == 2) && loopId != 0)
+            {
+                cluster_test.push_back(node);
+                std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                spatialScore = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+                
+
+                // combine
+                combine.setProb(loop);
+                bool combineCheck = combine.run(keypointScore, objectScore, spatialScore);
+                if(combineCheck)
+                {
+                    combine_loop++ ; 
+                    std::cout << " combine " << node.id_ << " & " <<loopId << std::endl;
+                    file_combine << " combine " << node.id_ << " & " <<loopId << std::endl;
+                    computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                }
+
+                continue;
+            }
+
+            cluster_test.push_back(node);
+            if(node.id_ != 1 && node.id_ != 2  && loopId != 0)            
+            {
+                std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                spatialScore = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
+            }
+            cluster_test.pop_front();
+
+            // combine 
+            if(loopId != 0 )
+            {
+                combine.setProb(loop);
+                bool combineCheck = combine.run(keypointScore, objectScore, spatialScore);
+                if(combineCheck)
+                {
+                    combine_loop ++ ;
+                    std::cout << " combine " << node.id_ << " & " << loopId << std::endl;
+                    file_combine << " combine " << node.id_ << " & " << loopId << std::endl;
+                    computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                }
+                std::cout << std::endl;
+            }
+        }
+        std::cout << " keypoint loop : " << keypoint_loop <<std::endl;
+        std::cout << " spatial loop : " << spatial_loop << std::endl;
+        std::cout << " combine loop : " << combine_loop << std::endl << std::endl;
         // bowkeypoint precision
+        module = 1 ;
         tako::Verification BoW_precision(thr, total_image, keypoint_loop, total_real_loop);
-        BoW_precision.run(1, computeLoop_keypoint);
+        BoW_precision.run(module, computeLoop_keypoint);
         std::cout<< " finish keypoint precision & recall !" << std::endl;
         // spatial precision
+        module = 3 ;
         tako::Verification Spatial_precision(thr, total_image, spatial_loop, total_real_loop);
-        Spatial_precision.run(3, computeLoop_spatial);
+        Spatial_precision.run(module, computeLoop_spatial);
         std::cout << " finish spatial precision & recall ! " << std::endl;
+        // combine precision
+        module = 4 ; 
+        tako::Verification Combine_precision(thr, total_image, combine_loop, total_real_loop, alpha, beta, gamma, W_th);
+        Combine_precision.run(module, computeLoop_combine);
+        std::cout << " finish combine precision & recall ! " << std::endl;
     }
     // close file 
     file_object.close();
     file_spatial.close();
     file_keypoint.close();
+    file_combine.close();
     file_total.close();
     return 0;
 }

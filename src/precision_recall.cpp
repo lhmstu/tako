@@ -22,10 +22,10 @@ namespace tako
     }
     void Verification::run(int module, cv::Mat computeLoop)
     {
-        std::cerr << " start module " << module << "precision & recall ! " << std::endl;
+        std::cerr << " start module " << module << " precision & recall ! " << std::endl;
         module_ = module ;
         int tp = this->getTP(this->correctLoop(), computeLoop);
-        std::cerr << " tp : " << tp << std::endl;
+        std::cerr << "module "<< module <<" tp : " << tp << std::endl;
         int fp = compute_loop_ - tp ; 
         int fn = real_loop_ - tp ;
         double precision =  this->getPrecision(tp, fp);
@@ -65,6 +65,7 @@ namespace tako
         }
         else
         {
+            file_ << " -------------------------------------- " << std::endl;
             if(module_ == 4)
             {
                 file_ << "module : Final combine " << std::endl;
@@ -75,15 +76,15 @@ namespace tako
             file_ << " -object_threshold : " << *(thr_ + 1) << std::endl;
             file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
 
-            file_ << "final threshold parameter : " << std::endl;
+            file_ << " Combine threshold parameter : " << std::endl;
             file_ << " -alpha: " << alpha <<", "<<"beta: "<<beta <<", "
                 <<"gamma: "<<gamma<< ", Wth: " << Wth << std::endl;
             file_ << std::endl;
 
-            file_ << "Total image : " << total_image_ << std::endl;
-            file_ << "output values ..." << std::endl;
-            file_ << "precision" << "," << "recall" << std::endl;
-            file_ << precision <<","<< recall << std::endl;
+            file_ << " Total image : " << total_image_ << std::endl;
+            file_ << " output values ..." << std::endl;
+            file_ << " precision" << "," << "recall" << std::endl;
+            file_ <<" "<< precision <<","<< recall << std::endl;
             file_ << std::endl;
         }
 
@@ -101,6 +102,7 @@ namespace tako
         }
         else
         {
+            file_ << " ---------------------------------- " << std::endl;
             if(module_ == 1)
             {
                 file_ << "module : BoW keypoint " << std::endl;
@@ -116,10 +118,10 @@ namespace tako
             file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
             file_ << std::endl;
 
-            file_ << "Total image : " << total_image_ << std::endl;
-            file_ << "output values ..." << std::endl;
-            file_ << "precision" << "," << "recall" << std::endl;
-            file_ << precision <<","<< recall << std::endl;
+            file_ << " Total image : " << total_image_ << std::endl;
+            file_ << " output values ..." << std::endl;
+            file_ << " precision" << "," << "recall" << std::endl;
+            file_ << " "<<precision <<","<< recall << std::endl;
             file_ << std::endl;
         }
 

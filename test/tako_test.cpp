@@ -339,7 +339,7 @@ int main(int argc, char** argv)
             double spatialScore = 0 ;
 
             // object team 
-            if( loop[1].size() > 0 )
+            if( !(loop[1].empty()) )
             {
                 loop[1].clear();
             }
@@ -428,6 +428,8 @@ int main(int argc, char** argv)
                 }
                 std::cout << std::endl;
             }
+            std::cout << " loop[1].size() = " << loop[1].size() << std::endl;
+            file_object << " loop[1].size() = " << loop[1].size() << std::endl;
         }
         std::cout << " keypoint loop : " << keypoint_loop <<std::endl;
         std::cout << " spatial loop : " << spatial_loop << std::endl;

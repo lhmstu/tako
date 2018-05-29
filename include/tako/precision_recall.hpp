@@ -8,6 +8,8 @@ namespace tako
     class Verification
     {
       public:
+        //file name
+        std::string filename_; 
         //type of modules
         // module 
         //  1 : bow keypoint  
@@ -20,7 +22,7 @@ namespace tako
         int total_image_ ;//= tako::Config::get<int>("total_image"); // 需要直接定義完成
         int real_loop_ ;//= tako::Config::get<int>("total_real_loop"); // 需要直接定義完成
         int compute_loop_ ;
-        //int tp = tako::Config::get<int>("TP"); // 發生正確 loop closure 
+        int tp_ ; // 發生正確 loop closure 
         //int fp; // 發生錯誤 loop closure
         //int fn; // 沒有偵測到的 loop closure 現實 loop - TP
 
@@ -40,6 +42,7 @@ namespace tako
         Verification(double* thr, int total_image, int compute_loop, int real_loop);
         Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha, float beta, float gamma, float Wth);
         ~Verification();
+        void setFilename(std::string filename);
         void run(int module, cv::Mat loop);
         double getPrecision(int tp, int fp);
         double getRecall(int tp, int fn);

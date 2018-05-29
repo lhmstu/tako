@@ -20,17 +20,24 @@ namespace tako
         gamma_ = gamma;
         Wth_ = Wth ;
     }
+
+    void Verification::setFilename(std::string filename)
+    {
+        filename_ = filename ;
+    }
+
     void Verification::run(int module, cv::Mat computeLoop)
     {
         std::cerr << " start module " << module << " precision & recall ! " << std::endl;
         module_ = module ;
         int tp = this->getTP(this->correctLoop(), computeLoop);
+        tp_ = tp ;
         std::cerr << "module "<< module <<" tp : " << tp << std::endl;
         int fp = compute_loop_ - tp ; 
         int fn = real_loop_ - tp ;
         double precision =  this->getPrecision(tp, fp);
         double recall = this->getRecall(tp, fn);
-
+        
         if(alpha_ != 0 || beta_ != 0 || Wth_ != 0)
         {
             this->savefile(alpha_, beta_, gamma_, Wth_, precision, recall);
@@ -58,7 +65,7 @@ namespace tako
     void Verification::savefile(float alpha, float beta, float gamma, float Wth, double precision, double recall)
     {
         std::ofstream file_;
-        file_.open("precision_recall.txt", std::ios::out|std::ios::app);
+        file_.open(filename_, std::ios::out|std::ios::app);
         if(!file_)
         {
             std::cerr << " the file doesn't exist!!" << std::endl;
@@ -77,14 +84,17 @@ namespace tako
             file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
 
             file_ << " Combine threshold parameter : " << std::endl;
-            file_ << " -alpha: " << alpha <<", "<<"beta: "<<beta <<", "
-                <<"gamma: "<<gamma<< ", Wth: " << Wth << std::endl;
+            file_ << " -(alpha, beta, gamma, Wth) = " << "(" 
+                    << alpha << ", "
+                    << beta << ", " 
+                    << gamma << ", " 
+                    << Wth << ")" << std::endl;
             file_ << std::endl;
 
             file_ << " Total image : " << total_image_ << std::endl;
-            file_ << " output values ..." << std::endl;
-            file_ << " precision" << "," << "recall" << std::endl;
-            file_ <<" "<< precision <<","<< recall << std::endl;
+            file_ << " TP : " << tp_ << std::endl;
+            file_ << " (precision" << ", " << "recall)" << std::endl;
+            file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;
             file_ << std::endl;
         }
 
@@ -95,7 +105,7 @@ namespace tako
     void Verification::savefile(double precision, double recall)
     {
         std::ofstream file_;
-        file_.open("precision_recall.txt", std::ios::out|std::ios::app);
+        file_.open(filename_, std::ios::out|std::ios::app);
         if(!file_)
         {
             std::cerr << " the file doesn't exist!!" << std::endl;
@@ -119,9 +129,9 @@ namespace tako
             file_ << std::endl;
 
             file_ << " Total image : " << total_image_ << std::endl;
-            file_ << " output values ..." << std::endl;
-            file_ << " precision" << "," << "recall" << std::endl;
-            file_ << " "<<precision <<","<< recall << std::endl;
+            file_ << " TP : " << tp_ << std::endl;
+            file_ << " (precision" << ", " << "recall)" << std::endl;
+            file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;
             file_ << std::endl;
         }
 
@@ -157,7 +167,7 @@ namespace tako
                     correctLoop.at<int>(i, 11 - 1) = 1 ;
                     break;
                 case 4 :
-                    correctLoop.at<int>(i, 10 - 1) = 1 ;
+                    correctLoop.at<int>(i, 438 - 1) = 1 ;
                     break;
                 case 5 :
                     correctLoop.at<int>(i, 11 - 1) = 1 ;
@@ -471,9 +481,9 @@ namespace tako
                 case 12 :
                     correctLoop.at<int>(i , 414 - 1) = 1 ;
                     break;
-                case 13 :
-                    correctLoop.at<int>(i , 435 - 1) = 1 ;
-                    break;
+                //case 13 :
+                //    correctLoop.at<int>(i , 435 - 1) = 1 ;
+                //    break;
                 case 44 :
                     correctLoop.at<int>(i , 447 - 1) = 1 ;
                     break;
@@ -519,9 +529,9 @@ namespace tako
                 case 412 :
                     correctLoop.at<int>(i , 433 - 1) = 1 ;
                     break;
-                case 413 :
-                    correctLoop.at<int>(i , 438 - 1) = 1 ;
-                    break;
+                //case 413 :
+                //    correctLoop.at<int>(i , 438 - 1) = 1 ;
+                //    break;
                 case 446 :
                     correctLoop.at<int>(i , 451 - 1) = 1 ;
                     break;
@@ -534,12 +544,12 @@ namespace tako
                 case 42 :
                     correctLoop.at<int>(i , 447 - 1) = 1 ;
                     break;
-                case 214 :
-                    correctLoop.at<int>(i , 221 - 1) = 1 ;
-                    break;
-                case 226 :
-                    correctLoop.at<int>(i , 251 - 1) = 1 ;
-                    break;
+                //case 214 :
+                //    correctLoop.at<int>(i , 221 - 1) = 1 ;
+                //    break;
+                //case 226 :
+                //    correctLoop.at<int>(i , 251 - 1) = 1 ;
+                //    break;
                 case 233 :
                     correctLoop.at<int>(i , 238 - 1) = 1 ;
                     break;
@@ -552,18 +562,18 @@ namespace tako
                 case 298 :
                     correctLoop.at<int>(i , 303 - 1) = 1 ;
                     break;
-                case 317 :
-                    correctLoop.at<int>(i , 322 - 1) = 1 ;
-                    break;
+                //case 317 :
+                //    correctLoop.at<int>(i , 322 - 1) = 1 ;
+                //   break;
                 case 318 :
                     correctLoop.at<int>(i , 323 - 1) = 1 ;
                     break;
                 case 392 :
                     correctLoop.at<int>(i , 397 - 1) = 1 ;
                     break;
-                case 410 :
-                    correctLoop.at<int>(i , 415 - 1) = 1 ;
-                    break;
+                //case 410 :
+                //    correctLoop.at<int>(i , 415 - 1) = 1 ;
+                //    break;
                 // 0.03
                 case 33 :
                     correctLoop.at<int>(i, 447 - 1) = 1 ;
@@ -595,30 +605,131 @@ namespace tako
                 case 349 :
                     correctLoop.at<int>(i, 399 - 1) = 1 ;
                     break;
-                case 445 :
-                    correctLoop.at<int>(i, 451 - 1) = 1 ;
-                    break;
+                //case 445 :
+                //    correctLoop.at<int>(i, 451 - 1) = 1 ;
+                //    break;
                 case 30 :
                     correctLoop.at<int>(i, 437 - 1) = 1 ;
                     break;
-                case 201 :
-                    correctLoop.at<int>(i, 206 - 1) = 1 ;
+                //case 201 :
+                //    correctLoop.at<int>(i, 206 - 1) = 1 ;
+                //    break;
+                //case 202 :
+                //    correctLoop.at<int>(i, 207 - 1) = 1 ;
+                //    break;
+                //case 203 :
+                //    correctLoop.at<int>(i, 209 - 1) = 1 ;
+                //    break;
+                //case 272 :
+                //    correctLoop.at<int>(i, 280 - 1) = 1 ;
+                //    break;
+                //case 409 :
+                //    correctLoop.at<int>(i, 433 - 1) = 1 ;
+                //    break;
+                //case 411 :
+                //    correctLoop.at<int>(i, 433 - 1) = 1 ;
+                //    break;
+
+
+
+                // special
+                case 37 : 
+                    correctLoop.at<int>(i, 42 - 1) = 1 ;
                     break;
-                case 202 :
-                    correctLoop.at<int>(i, 207 - 1) = 1 ;
+                case 39 : 
+                    correctLoop.at<int>(i, 44 - 1) = 1 ;
                     break;
-                case 203 :
-                    correctLoop.at<int>(i, 209 - 1) = 1 ;
+                case 45 : 
+                    correctLoop.at<int>(i, 50 - 1) = 1 ;
                     break;
-                case 272 :
-                    correctLoop.at<int>(i, 280 - 1) = 1 ;
+                case 46 : 
+                    correctLoop.at<int>(i, 52 - 1) = 1 ;
                     break;
-                case 409 :
-                    correctLoop.at<int>(i, 433 - 1) = 1 ;
+                case 323 : 
+                    correctLoop.at<int>(i, 328 - 1) = 1 ;
                     break;
-                case 411 :
-                    correctLoop.at<int>(i, 433 - 1) = 1 ;
+                case 322 : 
+                    correctLoop.at<int>(i, 328 - 1) = 1 ;
                     break;
+                case 95 : 
+                    correctLoop.at<int>(i, 100 - 1) = 1 ;
+                    break;
+                case 97 : 
+                    correctLoop.at<int>(i, 102 - 1) = 1 ;
+                    break;
+                case 62 : 
+                    correctLoop.at<int>(i, 67 - 1) = 1 ;
+                    break;
+                case 67 : 
+                    correctLoop.at<int>(i, 72 - 1) = 1 ;
+                    break;
+                case 68 : 
+                    correctLoop.at<int>(i, 73 - 1) = 1 ;
+                    break;
+                case 84 : 
+                    correctLoop.at<int>(i, 89 - 1) = 1 ;
+                    break;
+                case 85 : 
+                    correctLoop.at<int>(i, 90 - 1) = 1 ;
+                    break;
+                case 132 : 
+                    correctLoop.at<int>(i, 137 - 1) = 1 ;
+                    break;
+                case 135 : 
+                    correctLoop.at<int>(i, 140 - 1) = 1 ;
+                    break;
+                case 146 : 
+                    correctLoop.at<int>(i, 151 - 1) = 1 ;
+                    break;
+                case 147 : 
+                    correctLoop.at<int>(i, 152 - 1) = 1 ;
+                    break;
+                case 149 : 
+                    correctLoop.at<int>(i, 154 - 1) = 1 ;
+                    break;
+                case 184 : 
+                    correctLoop.at<int>(i, 189 - 1) = 1 ;
+                    break;
+                case 254 : 
+                    correctLoop.at<int>(i, 259 - 1) = 1 ;
+                    break;
+                case 313 : 
+                    correctLoop.at<int>(i, 319 - 1) = 1 ;
+                    break;
+                case 320 : 
+                    correctLoop.at<int>(i, 326 - 1) = 1 ;
+                    break;
+                case 321 : 
+                    correctLoop.at<int>(i, 326 - 1) = 1 ;
+                    break;
+                case 324 : 
+                    correctLoop.at<int>(i, 329 - 1) = 1 ;
+                    break;
+                case 326 : 
+                    correctLoop.at<int>(i, 331 - 1) = 1 ;
+                    break;
+                case 328 : 
+                    correctLoop.at<int>(i, 333 - 1) = 1 ;
+                    break;
+                case 330 : 
+                    correctLoop.at<int>(i, 335 - 1) = 1 ;
+                    break;
+                case 329 : 
+                    correctLoop.at<int>(i, 334 - 1) = 1 ;
+                    break;
+                case 332 : 
+                    correctLoop.at<int>(i, 337 - 1) = 1 ;
+                    break;
+                case 333 : 
+                    correctLoop.at<int>(i, 338 - 1) = 1 ;
+                    break;
+                case 427 : 
+                    correctLoop.at<int>(i, 435 - 1) = 1 ;
+                    break;
+                case 428 : 
+                    correctLoop.at<int>(i, 435 - 1) = 1 ;
+                    break;
+                    
             }
         }
         return correctLoop ;

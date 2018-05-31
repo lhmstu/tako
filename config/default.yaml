@@ -17,7 +17,6 @@ keypoint_method: 1
 
 #Bow3 threshold
 vocabulary_database: ./vocabulary.yml.gz
-BoW_threshold: 0.09
 
 #Object detector
 # yolo2.cfg
@@ -27,25 +26,42 @@ object_model: /home/alvin/lib/darknet/yolov2.weights
 # coco.names
 object_classnames: /home/alvin/lib/darknet/data/coco.names
 # confidence_threshold
+
+
+
+#Total threshold
+# start
+BoW_Threshold_start: 0.01
 min_confidence: 0.24
-# total_image for tf-idf
-total_image: 452
+Spatial_Threshold_start: 0.01
 
+# interational
+BoW_Threshold_inter: 0.01
+min_confidence_inter: 0.24
+Spatial_Threshold_inter: 0.01
 
+# end
+BoW_Threshold_end: 0.15
+min_confidence_end: 0.24
+Spatial_Threshold_end: 0.11
 
-# spatial module
-# threshold
-Spatial_Threshold: 0.01
 
 # final scoring
 # a+b+g = 1 
-alpha: 0.3
-beta: 0.3
-gamma: 0.4
-threshold_weight: 0.9 # 看中 物件的程度
+alpha_start: 0.3
+beta_start: 0.3
+gamma_start: 0.4
+#inter
+weight_inter: 0.1
+# end
+weight_end: 0.9
+
+#threshold_weight: 0.9 # 看中 物件的程度
 
 # precision recall this database 
 #total_image: 452
+#total_image for tf-idf
+total_image: 452
 total_real_loop: 220
  
 

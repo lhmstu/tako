@@ -1,9 +1,13 @@
 #include "tako/combine.hpp"
 namespace tako
 {
-    Combine::Combine(float alpha = 0, float beta = 0, float gamma = 0, float Wth = 0): alpha(alpha), beta(beta),gamma(gamma), Wth(Wth)
+    //Combine::Combine(float alpha = 0, float beta = 0, float gamma = 0, float Wth = 0): alpha(alpha), beta(beta),gamma(gamma), Wth(Wth)
+    //Combine::Combine(float alpha = 0, float beta = 0, float gamma = 0): alpha(alpha), beta(beta),gamma(gamma)
+    Combine::Combine(float weight[])
     {
-
+        alpha = weight[0];
+        beta = weight[1];
+        gamma = weight[2];
     }
 
     void Combine::setProb(std::vector<int> loop[])
@@ -41,11 +45,12 @@ namespace tako
         }
         condition_keyspatial_nobj = (double)keyspatial_nobj_/(double)keyspatial_;
         condition_keyspatial_obj = (double)keyspatial_obj_/(double)keyspatial_;
-        std::cout << " --keyspatial : " << keyspatial_ << std::endl;
+        /*std::cout << " --keyspatial : " << keyspatial_ << std::endl;
         std::cout << " --keyspatial_nobj : " << keyspatial_nobj_ << std::endl;
         std::cout << " --keyspatial_obj : " << keyspatial_obj_ << std::endl;
         std::cout << " --condition_nobj : " << condition_keyspatial_nobj << std::endl;
         std::cout << " --condition_obj : " << condition_keyspatial_obj << std::endl;
+        */
     }
 
     void Combine::resetProb()
@@ -59,7 +64,8 @@ namespace tako
     // main run 
     bool Combine::run(double keypoint_score, bool object_score, double spatial_score)
     {
-        if(alpha && beta && gamma && Wth)
+        //if(alpha && beta && gamma && Wth)
+        if(alpha || beta || gamma)
         {
             //std::cerr<<"Combint init correct...." <<std::endl;
         }
@@ -81,8 +87,9 @@ namespace tako
     double Combine::setThreshold()
     {
         double threshold = 0;
-        threshold = (1 - Wth) * condition_keyspatial_nobj + Wth * condition_keyspatial_obj;
-        std::cout << " -combine threshold : " << threshold << std::endl;
+        //threshold = (1 - Wth) * condition_keyspatial_nobj + Wth * condition_keyspatial_obj;
+        threshold = (alpha + beta)* condition_keyspatial_nobj + (1 - (alpha + beta)) * condition_keyspatial_obj;
+        //std::cout << " -combine threshold : " << threshold << std::endl;
 
         
         return threshold;
@@ -94,12 +101,12 @@ namespace tako
        if(object)
        {
             score = (alpha*keypoint) + (beta*spatial) + (gamma*object) ;
-            std::cout << " -obj combine score : " << score << std::endl;
+            //std::cout << " -obj combine score : " << score << std::endl;
        }
        else
        {
             score = (alpha / (alpha + beta)) * keypoint + (beta / (alpha + beta))* spatial;
-            std::cout << " -nobj combine score : " << score << std::endl;
+            //std::cout << " -nobj combine score : " << score << std::endl;
        }
 
        return score ;

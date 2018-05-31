@@ -10,7 +10,7 @@ namespace tako
             float alpha;
             float beta;
             float gamma;
-            float Wth;
+            //float Wth;
 
             //double prob_key = 0; // keypoint method loop number
             //double prob_obj = 0; // same object number
@@ -21,7 +21,9 @@ namespace tako
 
         public:
             //set parameter
-            Combine(float alpha, float beta, float gamma, float Wth);
+            //Combine(float alpha, float beta, float gamma, float Wth);
+            //Combine(float alpha, float beta, float gamma);
+            Combine(float weight[]);
             void setProb(std::vector<int> loop[]);
             void resetProb();
             

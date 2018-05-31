@@ -8,6 +8,7 @@ set (tako_files
     spatial.cpp
     combine.cpp
     precision_recall.cpp
+   # parameter.cpp
 
     sqlite3.c
 )

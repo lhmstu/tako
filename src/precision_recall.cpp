@@ -9,16 +9,18 @@ namespace tako
         compute_loop_ = compute_loop;
         real_loop_ = real_loop;
     }
-    Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha = 0, float beta = 0,float gamma = 0, float Wth = 0)
+    //Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha = 0, float beta = 0,float gamma = 0)
+    Verification::Verification(double* thr, float* weight, int total_image, int compute_loop, int real_loop)
     {
         thr_ = thr ;
+        weight_ = weight;
         total_image_ = total_image;
         compute_loop_ = compute_loop;
         real_loop_ = real_loop;
-        alpha_ = alpha;
-        beta_ = beta;
-        gamma_ = gamma;
-        Wth_ = Wth ;
+        //alpha_ = alpha;
+        //beta_ = beta;
+        //gamma_ = gamma;
+        //Wth_ = Wth ;
     }
 
     void Verification::setFilename(std::string filename)
@@ -30,21 +32,31 @@ namespace tako
     {
         std::cerr << " start module " << module << " precision & recall ! " << std::endl;
         module_ = module ;
+        // tp fp fn tn 
         int tp = this->getTP(this->correctLoop(), computeLoop);
         tp_ = tp ;
-        std::cerr << "module "<< module <<" tp : " << tp << std::endl;
+        //std::cerr << "module "<< module <<" tp : " << tp << std::endl;
         int fp = compute_loop_ - tp ; 
         int fn = real_loop_ - tp ;
+        int tn = total_image_ - tp - fp - fn ;
+
+        // ROC
+        tpr = (double)(tp/(tp + fn));
+        fpr = (double)(fp/(fp + tn));
+
+        //precision recall
         double precision =  this->getPrecision(tp, fp);
         double recall = this->getRecall(tp, fn);
         
-        if(alpha_ != 0 || beta_ != 0 || Wth_ != 0)
+        //if(weight_[0] != 0 || weight_[1] != 0 || weight_[2] != 0)
+        if(weight_ == nullptr)
         {
-            this->savefile(alpha_, beta_, gamma_, Wth_, precision, recall);
+            this->savefile(precision, recall);
         }
         else
         {
-            this->savefile(precision, recall);
+            //this->savefile(alpha_, beta_, gamma_, precision, recall);
+            this->savefile(weight_[0], weight_[1], weight_[2], precision, recall);
         }
     }
 
@@ -62,7 +74,8 @@ namespace tako
         return recall ; 
     }
 
-    void Verification::savefile(float alpha, float beta, float gamma, float Wth, double precision, double recall)
+    //void Verification::savefile(float alpha, float beta, float gamma, float Wth, double precision, double recall)
+    void Verification::savefile(float alpha, float beta, float gamma, double precision, double recall)
     {
         std::ofstream file_;
         file_.open(filename_, std::ios::out|std::ios::app);
@@ -72,27 +85,27 @@ namespace tako
         }
         else
         {
-            file_ << " -------------------------------------- " << std::endl;
+            file_ << " **************************************************** " << std::endl;
             if(module_ == 4)
             {
                 file_ << "module : Final combine " << std::endl;
             }
-            file_ << "Loop closure test ..." << std::endl;
+            //file_ << "Loop closure test ..." << std::endl;
             file_ << "threshold " << std::endl;
             file_ << " -keypoint_threshold : " << *thr_ <<std::endl;
             file_ << " -object_threshold : " << *(thr_ + 1) << std::endl;
             file_ << " -spatial_threshold : " << *(thr_ + 2) << std::endl;
 
             file_ << " Combine threshold parameter : " << std::endl;
-            file_ << " -(alpha, beta, gamma, Wth) = " << "(" 
+            file_ << " -(alpha, beta, gamma) = " << "(" 
                     << alpha << ", "
                     << beta << ", " 
-                    << gamma << ", " 
-                    << Wth << ")" << std::endl;
+                    << gamma << ")" << std::endl;
             file_ << std::endl;
 
             file_ << " Total image : " << total_image_ << std::endl;
             file_ << " TP : " << tp_ << std::endl;
+            file_ << " ROC : " << "("<< tpr << "," << fpr << ")" << std::endl;
             file_ << " (precision" << ", " << "recall)" << std::endl;
             file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;
             file_ << std::endl;
@@ -112,7 +125,7 @@ namespace tako
         }
         else
         {
-            file_ << " ---------------------------------- " << std::endl;
+            file_ << " ****************************************************** " << std::endl;
             if(module_ == 1)
             {
                 file_ << "module : BoW keypoint " << std::endl;
@@ -121,7 +134,7 @@ namespace tako
             {
                 file_ << "module : Spatial descriptor " << std::endl;
             }
-            file_ << "Loop closure test ..." << std::endl;
+            //file_ << "Loop closure test ..." << std::endl;
             file_ << "threshold " << std::endl;
             file_ << " -keypoint_threshold : " << *thr_ <<std::endl;
             file_ << " -object_threshold : " << *(thr_ + 1) << std::endl;
@@ -130,6 +143,7 @@ namespace tako
 
             file_ << " Total image : " << total_image_ << std::endl;
             file_ << " TP : " << tp_ << std::endl;
+            file_ << " ROC : " << "("<< tpr << "," << fpr << ")" << std::endl;
             file_ << " (precision" << ", " << "recall)" << std::endl;
             file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;
             file_ << std::endl;

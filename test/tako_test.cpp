@@ -156,9 +156,9 @@ int main(int argc, char** argv)
             
 
             // threshold keypoint & spatial module
-            for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold <= thr_end[0]; keypoint_Threshold = keypoint_Threshold + thr_inter[0])
+            for(double spatial_threshold = thr_start[2]; spatial_threshold <= thr_end[2]; spatial_threshold = spatial_threshold + thr_inter[2])
             {
-                for(double spatial_threshold = thr_start[2]; spatial_threshold <= thr_end[2]; spatial_threshold = spatial_threshold + thr_inter[2])
+                for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold <= thr_end[0]; keypoint_Threshold = keypoint_Threshold + thr_inter[0])
                 {
                     file_keypoint << " ************************************************************** " << std::endl;
                     file_object << " ************************************************************** " << std::endl;
@@ -214,8 +214,8 @@ int main(int argc, char** argv)
                         file_total << " -------- "<<std::endl;
                         file_total << " node id : " << node.id_ << std::endl;
 
-                        std::cout << " -------- "<<std::endl;
-                        std::cout << " node id : " << node.id_ << std::endl;
+                        //std::cout << " -------- "<<std::endl;
+                        //std::cout << " node id : " << node.id_ << std::endl;
                         
                         // keypoint scoring
                         DBoW3::QueryResults ret ;
@@ -265,9 +265,10 @@ int main(int argc, char** argv)
                                 << " simularity image : " << loopId
                                 << " keypoint_score : " << keypoint_score <<std::endl;
 
-                            std::cout <<" *keypoint node : " << node.id_
+                            /*std::cout <<" *keypoint node : " << node.id_
                                 << " simularity image : " << loopId
                                 << " keypoint_score : " << keypoint_score <<std::endl;
+                            */
                         }
                         else
                         {
@@ -276,9 +277,10 @@ int main(int argc, char** argv)
 
                             file_keypoint << " keypoint node : " << node.id_
                                 << " not simularity image !" << std::endl;
-                            
+                            /*
                             std::cout << " keypoint node : " << node.id_
                                 << " not simularity image !" << std::endl;
+                                */
                         }
 
                         // object scoring
@@ -294,7 +296,7 @@ int main(int argc, char** argv)
 
                                     file_object << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
 
-                                    std::cout << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
+                                    //std::cout << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
                                 }
                                 /*
                                 else
@@ -334,8 +336,8 @@ int main(int argc, char** argv)
                                 file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                         << " spatial_Scoring : " << spatial_score <<std::endl;
                             
-                                std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                                        << " spatial_Scoring : " << spatial_score <<std::endl;
+                                //std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                                //        << " spatial_Scoring : " << spatial_score <<std::endl;
                             
                             }
                             continue;
@@ -366,8 +368,8 @@ int main(int argc, char** argv)
                                 file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                         << " spatial_Scoring : " << spatial_score <<std::endl;
                             
-                                std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                                        << " spatial_Scoring : " << spatial_score <<std::endl;
+                                //std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                                //        << " spatial_Scoring : " << spatial_score <<std::endl;
                             }
                         }
                         else
@@ -376,20 +378,20 @@ int main(int argc, char** argv)
 
                             file_spatial << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
 
-                            std::cout << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
+                            //std::cout << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
                             
                         }
 
                         cluster_test.pop_front();
 
-                        std::cout << " ------ " <<std::endl;
+                        //std::cout << " ------ " <<std::endl;
 
                     }
                     file_total << " keypoint loop : " << keypoint_loop <<std::endl;
                     file_total << " keypoint threshold : " << keypoint_Threshold <<std::endl;
                     file_total << " spatial loop : " << spatial_loop << std::endl;
 
-                    std::cout << " ------------ " << std::endl;
+                    //std::cout << " ------------ " << std::endl;
 
                     //std::cout <<" loop[0].size= " << loop[0].size() << std::endl;
                     //std::cout <<" loop[2].size= " << loop[2].size() << std::endl;
@@ -472,7 +474,7 @@ int main(int argc, char** argv)
                             if(combineCheck)
                             {
                                 combine_loop++ ; 
-                                std::cout << " combine " << node.id_ << " & " <<loopId << std::endl;
+                                //std::cout << " combine " << node.id_ << " & " <<loopId << std::endl;
                                 file_combine << " combine " << node.id_ << " & " <<loopId << std::endl;
                                 computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
                             }
@@ -496,7 +498,7 @@ int main(int argc, char** argv)
                             if(combineCheck)
                             {
                                 combine_loop ++ ;
-                                std::cout << " combine " << node.id_ << " & " << loopId << std::endl;
+                                //std::cout << " combine " << node.id_ << " & " << loopId << std::endl;
                                 file_combine << " combine " << node.id_ << " & " << loopId << std::endl;
                                 computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
                             }
@@ -534,8 +536,8 @@ int main(int argc, char** argv)
                     Combine_precision.setFilename(combine_file);
                     Combine_precision.run(module, computeLoop_combine);
                     std::cout << " finish combine precision & recall ! " << std::endl;
-                }
-            }            
+                }// keypoint threshold
+            } // spatial threshold
         }while((weight_point1) != 12); //do
         
 

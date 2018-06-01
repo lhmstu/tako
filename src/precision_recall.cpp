@@ -2,7 +2,7 @@
 
 namespace tako
 {
-    Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop)
+    void Verification::init(double* thr, int total_image, int compute_loop, int real_loop)
     {
         thr_ = thr ;
         total_image_ = total_image;
@@ -10,7 +10,7 @@ namespace tako
         real_loop_ = real_loop;
     }
     //Verification::Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha = 0, float beta = 0,float gamma = 0)
-    Verification::Verification(double* thr, float* weight, int total_image, int compute_loop, int real_loop)
+    void Verification::init(double* thr, float* weight, int total_image, int compute_loop, int real_loop)
     {
         thr_ = thr ;
         weight_ = weight;
@@ -38,11 +38,11 @@ namespace tako
         //std::cerr << "module "<< module <<" tp : " << tp << std::endl;
         int fp = compute_loop_ - tp ; 
         int fn = real_loop_ - tp ;
-        int tn = total_image_ - tp - fp - fn ;
+        unsigned int tn = total_image_ - tp - fp - fn ;
 
         // ROC
-        tpr = (double)(tp/(tp + fn));
-        fpr = (double)(fp/(fp + tn));
+        tpr = (double)tp/(double)(tp + fn);
+        fpr = (double)fp/(double)(fp + tn);
 
         //precision recall
         double precision =  this->getPrecision(tp, fp);
@@ -52,11 +52,13 @@ namespace tako
         if(weight_ == nullptr)
         {
             this->savefile(precision, recall);
+            tip++;
         }
         else
         {
             //this->savefile(alpha_, beta_, gamma_, precision, recall);
             this->savefile(weight_[0], weight_[1], weight_[2], precision, recall);
+            tip++;
         }
     }
 
@@ -85,7 +87,7 @@ namespace tako
         }
         else
         {
-            file_ << " **************************************************** " << std::endl;
+            file_ <<tip<< " **************************************************** " << std::endl;
             if(module_ == 4)
             {
                 file_ << "module : Final combine " << std::endl;
@@ -125,7 +127,7 @@ namespace tako
         }
         else
         {
-            file_ << " ****************************************************** " << std::endl;
+            file_ <<tip<< " ****************************************************** " << std::endl;
             if(module_ == 1)
             {
                 file_ << "module : BoW keypoint " << std::endl;

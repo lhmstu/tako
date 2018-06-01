@@ -10,6 +10,7 @@ namespace tako
       public:
         //file name
         std::string filename_; 
+        int tip = 1;
         //type of modules
         // module 
         //  1 : bow keypoint  
@@ -44,10 +45,11 @@ namespace tako
         // 3 float spatial_threshold_;
 
       public:
-        Verification(double* thr, int total_image, int compute_loop, int real_loop);
+        Verification(){}
+        void init(double* thr, int total_image, int compute_loop, int real_loop);
+        void init(double* thr, float* weight, int total_image, int compute_loop, int real_loop);
         //Verification(double* thr, int total_image, int compute_loop, int real_loop, float alpha, float beta, float gamma, float Wth);
         //Verification(double* thr, int total_image, int compute_loop, int real_loop,float alpha, float beta, float gamma);
-        Verification(double* thr, float* weight, int total_image, int compute_loop, int real_loop);
         ~Verification();
         void setFilename(std::string filename);
         void run(int module, cv::Mat loop);

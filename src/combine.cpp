@@ -88,10 +88,9 @@ namespace tako
     {
         double threshold = 0;
         //threshold = (1 - Wth) * condition_keyspatial_nobj + Wth * condition_keyspatial_obj;
-        threshold = (alpha + beta)* condition_keyspatial_nobj + (1 - (alpha + beta)) * condition_keyspatial_obj;
-        //std::cout << " -combine threshold : " << threshold << std::endl;
+        threshold = ((alpha + beta)/10)* condition_keyspatial_nobj + (1 - (alpha + beta)) * condition_keyspatial_obj;
+        std::cout << " -combine threshold : " << threshold << std::endl;
 
-        
         return threshold;
     }
 
@@ -101,12 +100,12 @@ namespace tako
        if(object)
        {
             score = (alpha*keypoint) + (beta*spatial) + (gamma*object) ;
-            //std::cout << " -obj combine score : " << score << std::endl;
+            std::cout << " -obj combine score : " << score << std::endl;
        }
        else
        {
             score = (alpha / (alpha + beta)) * keypoint + (beta / (alpha + beta))* spatial;
-            //std::cout << " -nobj combine score : " << score << std::endl;
+            std::cout << " -nobj combine score : " << score << std::endl;
        }
 
        return score ;

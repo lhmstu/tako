@@ -52,13 +52,13 @@ namespace tako
         if(weight_ == nullptr)
         {
             this->savefile(precision, recall);
-            tip++;
+            //tip++;
         }
         else
         {
             //this->savefile(alpha_, beta_, gamma_, precision, recall);
             this->savefile(weight_[0], weight_[1], weight_[2], precision, recall);
-            tip++;
+            //tip++;
         }
     }
 
@@ -87,7 +87,7 @@ namespace tako
         }
         else
         {
-            file_ <<tip<< " **************************************************** " << std::endl;
+            file_ << " **************************************************** " << std::endl;
             if(module_ == 4)
             {
                 file_ << "module : Final combine " << std::endl;
@@ -107,6 +107,7 @@ namespace tako
 
             file_ << " Total image : " << total_image_ << std::endl;
             file_ << " TP : " << tp_ << std::endl;
+            file_ << " compute loop : " << compute_loop_ << std::endl;
             file_ << " ROC : " << "("<< tpr << "," << fpr << ")" << std::endl;
             file_ << " (precision" << ", " << "recall)" << std::endl;
             file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;
@@ -127,7 +128,7 @@ namespace tako
         }
         else
         {
-            file_ <<tip<< " ****************************************************** " << std::endl;
+            file_ << " ****************************************************** " << std::endl;
             if(module_ == 1)
             {
                 file_ << "module : BoW keypoint " << std::endl;
@@ -145,6 +146,7 @@ namespace tako
 
             file_ << " Total image : " << total_image_ << std::endl;
             file_ << " TP : " << tp_ << std::endl;
+            file_ << " compute loop : " << compute_loop_ << std::endl;
             file_ << " ROC : " << "("<< tpr << "," << fpr << ")" << std::endl;
             file_ << " (precision" << ", " << "recall)" << std::endl;
             file_ <<" ("<< precision <<", "<< recall <<")"<< std::endl;

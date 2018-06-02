@@ -48,8 +48,8 @@ Spatial_Threshold_end: 0.05
 
 # final scoring
 # a+b+g = 1 
-alpha_start: 0.3
-beta_start: 0.3
+alpha_start: 0.1
+beta_start: 0.1
 gamma_start: 0.4
 #inter
 weight_inter: 0.1

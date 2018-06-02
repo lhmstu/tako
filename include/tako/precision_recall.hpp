@@ -10,7 +10,7 @@ namespace tako
       public:
         //file name
         std::string filename_; 
-        int tip = 1;
+        //int tip = 1;
         //type of modules
         // module 
         //  1 : bow keypoint  
@@ -29,7 +29,7 @@ namespace tako
         
         //ROC
         double tpr = 0;
-        double fpr = 0; 
+        double fpr = 1; 
 
         //final threshold
         //float alpha_ = 0;

@@ -12,7 +12,7 @@ list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/tako/cmake_modules)
 ## dependencies
 
 # OpenCV
-#find_package(OpenCV 3.4 REQUIRED)
+find_package(OpenCV 3.4 REQUIRED)
 
 #RTABMap
 #find_package(RTABMap REQUIRED)

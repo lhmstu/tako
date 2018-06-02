@@ -22,7 +22,7 @@
 
 // function
 //bool is_thr_end(double thr[]);
-void update_weight(float*, int*, int*);
+//void update_weight(float*, int*, int*);
 
 int main(int argc, char** argv)
 {
@@ -71,21 +71,21 @@ int main(int argc, char** argv)
 
 
     // keypoint file
-    std::ofstream file_keypoint;
-    file_keypoint.open("keypoint.txt", std::ios::out|std::ios::app);
+    //std::ofstream file_keypoint;
+    //file_keypoint.open("keypoint.txt", std::ios::out|std::ios::app);
 
     // object file
-    std::ofstream file_object;
-    file_object.open("object.txt", std::ios::out|std::ios::app) ;
+    //std::ofstream file_object;
+    //file_object.open("object.txt", std::ios::out|std::ios::app) ;
 
     // spatial file
-    std::ofstream file_spatial;
-    file_spatial.open("spatial.txt", std::ios::out|std::ios::app);
+    //std::ofstream file_spatial;
+    //file_spatial.open("spatial.txt", std::ios::out|std::ios::app);
     std::list<tako::Node> cluster_test;
 
     // combine file 
-    std::ofstream file_combine;
-    file_combine.open("combine.txt", std::ios::out|std::ios::app);
+    //std::ofstream file_combine;
+    //file_combine.open("combine.txt", std::ios::out|std::ios::app);
 
     // total file
     //std::ofstream file_total;
@@ -104,22 +104,26 @@ int main(int argc, char** argv)
 
     //threshold
     // start
-    double keypoint_Threshold_start = tako::Config::get<double> ("BoW_Threshold_start");
+    double keypoint_Threshold = tako::Config::get<double> ("BoW_Threshold_start");
     double object_confidence = tako::Config::get<double> ("min_confidence");
-    double spatial_threshold_start= tako::Config::get<double> ("Spatial_Threshold_start");
+    double spatial_threshold = tako::Config::get<double> ("Spatial_Threshold_start");
     // inter
-    double key_inter = tako::Config::get<double> ("BoW_Threshold_inter");
-    double obj_inter= tako::Config::get<double> ("min_confidence_inter");
-    double spa_inter = tako::Config::get<double> ("Spatial_Threshold_inter");
+    //double key_inter = tako::Config::get<double> ("BoW_Threshold_inter");
+    //double obj_inter= tako::Config::get<double> ("min_confidence_inter");
+    //double spa_inter = tako::Config::get<double> ("Spatial_Threshold_inter");
     // end
-    double keypoint_Threshold_end = tako::Config::get<double> ("BoW_Threshold_end");
-    double object_confidence_end = tako::Config::get<double> ("min_confidence_end");
-    double spatial_threshold_end = tako::Config::get<double> ("Spatial_Threshold_end");
+    //double keypoint_Threshold_end = tako::Config::get<double> ("BoW_Threshold_end");
+    //double object_confidence_end = tako::Config::get<double> ("min_confidence_end");
+    //double spatial_threshold_end = tako::Config::get<double> ("Spatial_Threshold_end");
 
+
+    //double keypoint_Threshold = keypoint_Threshold_start ; 
+    //double spatial_threshold = spatial_threshold_start ; 
     //combine
     // start
-    //float alpha = tako::Config::get<float> ("alpha_start");
-    //float beta  = tako::Config::get<float> ("beta_start");
+    float alpha = tako::Config::get<float> ("alpha_start");
+    float beta  = tako::Config::get<float> ("beta_start");
+    float gamma = 1 - alpha - beta ;
     //float gamma = tako::Config::get<float> ("gamma_start");
     // inter
     //float weight_inter = tako::Config::get<float> ("weight_inter");
@@ -129,7 +133,8 @@ int main(int argc, char** argv)
     //float W_th = tako::Config::get<float> ("threshold_weight");
 
     // store 
-    if(!file_keypoint || !file_spatial || !file_object || !file_combine)
+    //if(!file_keypoint || !file_spatial || !file_object || !file_combine)
+    if(false)
     {
         std::cout<<"file doesn't exist." <<std::endl;
     }
@@ -138,53 +143,49 @@ int main(int argc, char** argv)
         //set parameter server
         // three module threshold
         // collect threshold
-        double thr_start[3] = {keypoint_Threshold_start, object_confidence, spatial_threshold_start};
-        double thr_inter[3] = {key_inter, obj_inter, spa_inter};
+        //double thr_start[3] = {keypoint_Threshold_start, object_confidence, spatial_threshold_start};
+        
+        //double thr_inter[3] = {key_inter, obj_inter, spa_inter};
         // threshold end
-        double thr_end[3] = {keypoint_Threshold_end, object_confidence_end, spatial_threshold_end};
+        //double thr_end[3] = {keypoint_Threshold_end, object_confidence_end, spatial_threshold_end};
         // weight
         // init parameter thr_end & weight_end
         //tako::Parameter parameter(thr_start, thr_inter, thr_end, weight, weight_inter, weight_end);
-        int tip = 1;
-        float weight[3] = {0}; 
-        int weight_point1 = 1;
-        int weight_point2 = 2;
+        //int tip = 1;
+        float weight[3] = {alpha, beta, gamma}; 
+        //int weight_point1 = 1;
+        //int weight_point2 = 2;
         //precision recall init
-        tako::Verification BoW_precision;
-        tako::Verification Spatial_precision;
-        tako::Verification Combine_precision;
-        do
-        {
+        //do
+        //{
             // 調整參數
-            update_weight(weight, &weight_point1, &weight_point2);
+            //update_weight(weight, &weight_point1, &weight_point2);
             
-            
-
             // threshold keypoint & spatial module
-            for(double spatial_threshold = thr_start[2]; spatial_threshold <= thr_end[2]; spatial_threshold = spatial_threshold + thr_inter[2])
-            {
-                for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold <= thr_end[0]; keypoint_Threshold = keypoint_Threshold + thr_inter[0])
-                {
-                    file_keypoint <<tip<< " ************************************************************** " << std::endl;
-                    file_object <<tip<< " ************************************************************** " << std::endl;
-                    file_spatial <<tip<< " ************************************************************** " << std::endl;
-                    file_combine <<tip<< " ************************************************************** " << std::endl;
+            //for(double spatial_threshold = thr_start[2]; spatial_threshold <= thr_end[2]; spatial_threshold = spatial_threshold + thr_inter[2])
+            //{
+            //    for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold <= thr_end[0]; keypoint_Threshold = keypoint_Threshold + thr_inter[0])
+            //    {
+                    //file_keypoint <<tip<< " ************************************************************** " << std::endl;
+                    //file_object <<tip<< " ************************************************************** " << std::endl;
+                    //file_spatial <<tip<< " ************************************************************** " << std::endl;
+                    //file_combine <<tip<< " ************************************************************** " << std::endl;
                     //file_total <<tip<< " ************************************************************** " << std::endl;
-                    std::cout <<tip<< " ************************************************************** " << std::endl;
+                    std::cout<<" ************************************************************** " << std::endl;
 
-                    file_keypoint << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
-                    file_object << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
-                    file_spatial << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
-                    file_combine << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
+                    //file_keypoint << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
+                    //file_object << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
+                    //file_spatial << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
+                    //file_combine << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
                     //file_total << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
-                    std::cout << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
+                    //std::cout << "Threshold(BoW, object, spatial) : " << "(" << keypoint_Threshold <<", " << object_confidence << ", " << spatial_threshold << ")"<< std::endl << std::endl;
 
-                    file_keypoint << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
-                    file_object << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
-                    file_spatial << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
-                    file_combine << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
+                    //file_keypoint << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
+                    //file_object << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
+                    //file_spatial << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
+                    //file_combine << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
                     //file_total << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
-                    std::cout << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
+                    //std::cout << "Parameter(alpha, beta, gamma) : " << "(" << weight[0] <<", " << weight[1] << ", " << weight[2] << ")"<< std::endl << std::endl;
 
                     double thr[3] = {keypoint_Threshold, object_confidence, spatial_threshold};
                     //bool test = !(is_thr_end(thr, thr_end));
@@ -193,8 +194,8 @@ int main(int argc, char** argv)
                     int keypoint_loop = 0;
                     int spatial_loop = 0;
 
-                    file_keypoint << " database info : " <<std::endl;
-                    file_keypoint << db << std::endl;
+                    //file_keypoint << " database info : " <<std::endl;
+                    //file_keypoint << db << std::endl;
                     std::cout<<"compare image with database..." <<std::endl;
 
                     //tako::Combine combine(alpha, beta, gamma, W_th);
@@ -219,8 +220,8 @@ int main(int argc, char** argv)
                         //file_total << " -------- "<<std::endl;
                         //file_total << " node id : " << node.id_ << std::endl;
 
-                        //std::cout << " -------- "<<std::endl;
-                        //std::cout << " node id : " << node.id_ << std::endl;
+                        std::cout << " -------- "<<std::endl;
+                        std::cout << " node id : " << node.id_ << std::endl;
                         
                         // keypoint scoring
                         DBoW3::QueryResults ret ;
@@ -266,9 +267,9 @@ int main(int argc, char** argv)
                             //    << " simularity image : " << loopId
                             //    << " keypoint_score : " << keypoint_score <<std::endl;
                             
-                            file_keypoint <<" *keypoint node : " << node.id_
-                                << " simularity image : " << loopId
-                                << " keypoint_score : " << keypoint_score <<std::endl;
+                            //file_keypoint <<" *keypoint node : " << node.id_
+                            //    << " simularity image : " << loopId
+                            //    << " keypoint_score : " << keypoint_score <<std::endl;
 
                             /*std::cout <<" *keypoint node : " << node.id_
                                 << " simularity image : " << loopId
@@ -280,8 +281,8 @@ int main(int argc, char** argv)
                             //file_total << " keypoint node : " << node.id_
                             //    << " not simularity image !" << std::endl;
 
-                            file_keypoint << " keypoint node : " << node.id_
-                                << " not simularity image !" << std::endl;
+                            //file_keypoint << " keypoint node : " << node.id_
+                            //    << " not simularity image !" << std::endl;
                             /*
                             std::cout << " keypoint node : " << node.id_
                                 << " not simularity image !" << std::endl;
@@ -289,7 +290,7 @@ int main(int argc, char** argv)
                         }
 
                         // object scoring
-                        /*
+                        
                         std::vector<std::pair<int, float> > objscore;
                         objectDetect.objscoring(node, objscore);
                         if(keypoint_score >= keypoint_Threshold)
@@ -301,18 +302,14 @@ int main(int argc, char** argv)
 
                                     //std::cout << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
                                 }
-                                /*
+                                
                                 else
                                 {
 
                                 }
                                 
                             }
-                        */
-                        
-
-                
-
+                        }
                         // spatial scoring
                         if((node.id_ ==1 || node.id_ == 2)  && (keypoint_score >= keypoint_Threshold))
                         {
@@ -334,8 +331,8 @@ int main(int argc, char** argv)
                                 //file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                 //         << " spatial_Scoring : " << spatial_score <<std::endl;
 
-                                file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                                        << " spatial_Scoring : " << spatial_score <<std::endl;
+                                //file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                                //        << " spatial_Scoring : " << spatial_score <<std::endl;
                             
                                 //std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                 //        << " spatial_Scoring : " << spatial_score <<std::endl;
@@ -366,8 +363,8 @@ int main(int argc, char** argv)
                                 //file_total << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                 //        << " spatial_Scoring : " << spatial_score <<std::endl;
 
-                                file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
-                                        << " spatial_Scoring : " << spatial_score <<std::endl;
+                                //file_spatial << " *spatial node : " << node.id_ << " similarity node : " << loopId 
+                                //        << " spatial_Scoring : " << spatial_score <<std::endl;
                             
                                 //std::cout << " *spatial node : " << node.id_ << " similarity node : " << loopId 
                                 //        << " spatial_Scoring : " << spatial_score <<std::endl;
@@ -376,18 +373,13 @@ int main(int argc, char** argv)
                         else
                         {
                             //file_total << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
-
-                            file_spatial << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
-
+                            //file_spatial << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
                             //std::cout << " spatial node : " << node.id_ << " not similarity image !" << std::endl;
-                            
                         }
-
                         cluster_test.pop_front();
-
                         //std::cout << " ------ " <<std::endl;
-
                     }
+                    
                     //file_total << " keypoint loop : " << keypoint_loop <<std::endl;
                     //file_total << " keypoint threshold : " << keypoint_Threshold <<std::endl;
                     //file_total << " spatial loop : " << spatial_loop << std::endl;
@@ -397,40 +389,17 @@ int main(int argc, char** argv)
                     //std::cout <<" loop[0].size= " << loop[0].size() << std::endl;
                     //std::cout <<" loop[2].size= " << loop[2].size() << std::endl;
 
-                // Combine module 
+                    // Combine module 
+                    std::cout << "Combine module start ... " << std::endl;
+                    std::list<tako::Node> cluster_test2;
                     for(tako::Node& node:nodes)
                     {   
                         // score
+                        std::cout <<" *************** node : " << node.id_ << std::endl;
                         bool objectScore = false ;
                         double keypointScore = 0 ;
                         double spatialScore = 0 ;
-
-                        // object team 
-                        if( !(loop[1].empty()) )
-                        {
-                            loop[1].clear();
-                        }
-                        std::vector<std::pair<int, float> > objscore;
-                        objectDetect.objscoring(node, objscore);
-                        for(std::pair<int,float> &score:objscore)
-                        {
-                            if((int)score.second == 1 )
-                            {
-                                loop[1].push_back(score.first);
-                                //file_total << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
-                                file_object << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
-                            }
-                            //else
-                            //{
-                            //    file_total << " object node : "<< node.id_ << " has no object !!" <<std::endl;
-
-                             //   file_object <<" object node : " << node.id_ <<" has no object !! " << std::endl;
-                            //}                        
-                        }
-                        if( loop[1].size() > 0)
-                        {
-                            objectScore = true ;
-                        }
+                        bool combineCheck = false ;
 
                         //keypoint scoring
                         DBoW3::QueryResults ret ;
@@ -443,18 +412,10 @@ int main(int argc, char** argv)
                                 //std::cout<< "| | : " << (int)std::abs(iter->Id - node.id_) <<std::endl;
                                 if( iter->Score > keypointScore)
                                 {
-                                    //std::cout << iter->Id << " , " << node.id_ <<std::endl;
                                     //check node.id_
-                                    if(node.id_ == 4)
-                                    {
-                                        loopId = 438 ;
-                                        keypointScore = 0.419725;
-                                    }
-                                    else
-                                    {
-                                        loopId = iter->Id;
-                                        keypointScore = iter->Score;
-                                    }
+                                    //std::cout << iter->Id << " , " << node.id_ <<std::endl;
+                                    loopId = iter->Id;
+                                    keypointScore = iter->Score;
                                 }
                                 else
                                 {
@@ -465,64 +426,114 @@ int main(int argc, char** argv)
                             {
                                 continue;
                             }
-
                         }
-
-                        // spatial scoring
-                        if((node.id_ == 1 || node.id_ == 2) && loopId != 0)
+                        std::cout <<" node : " << node.id_ << " similarity : " << loopId << " score : " << keypointScore << std::endl;
+                        //object module
+                        std::cout << " keypoint_ threshold : " << keypoint_Threshold << std::endl;
+                        if(keypointScore >= keypoint_Threshold)
                         {
-                            cluster_test.push_back(node);
-                            std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
-                            spatialScore = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
-                            
-
-                            // combine main
-                            combine.setProb(loop);
-                            bool combineCheck = combine.run(keypointScore, objectScore, spatialScore);
-                            if(combineCheck)
+                            // object team 
+                            if( !(loop[1].empty()) )
                             {
-                                combine_loop++ ; 
-                                //std::cout << " combine " << node.id_ << " & " <<loopId << std::endl;
-                                file_combine << " combine " << node.id_ << " & " <<loopId << std::endl;
-                                computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                                loop[1].clear();
                             }
-
+                            std::vector<std::pair<int, float> > objscore;
+                            objectDetect.objscoring(node, objscore);
+                            for(std::pair<int,float> &score:objscore)
+                            {
+                                if((int)score.second == 1 )
+                                {
+                                    loop[1].push_back(score.first);
+                                    //file_total << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
+                                    //file_object << " *object node : " << node.id_ <<" & "<<score.first << " same object" <<std::endl;
+                                }
+                                //else
+                                //{
+                                //    file_total << " object node : "<< node.id_ << " has no object !!" <<std::endl;
+                                //   file_object <<" object node : " << node.id_ <<" has no object !! " << std::endl;
+                                //}                        
+                            }
+                            if( loop[1].size() > 0)
+                            {
+                                objectScore = true ;
+                            }
+                        }
+                        //if(keypointScore >= keypoint_Threshold)
+                        // spatial scoring
+                        if((node.id_ == 1 || node.id_ == 2))
+                        {
+                            cluster_test2.push_back(node);
+                            std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
+                            spatialScore = keypoints.compare_spatial2spatial(cluster_test2, cluster_aims);
+                            
+                            if(spatialScore >= spatial_threshold)
+                            {
+                                // combine main
+                                combine.setProb(loop);
+                                combineCheck = combine.run(keypointScore, objectScore, spatialScore);
+                                if(combineCheck)
+                                {
+                                    combine_loop++ ; 
+                                    std::cout << " 1combine " << node.id_ << " & " <<loopId << std::endl;
+                                    //file_combine << " combine " << node.id_ << " & " <<loopId << std::endl;
+                                    computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                                }
+                            }
                             continue;
                         }
-
-                        cluster_test.push_back(node);
-                        if(node.id_ != 1 && node.id_ != 2  && loopId != 0)            
+                        cluster_test2.push_back(node);
+                        if(node.id_ != 1  &&  node.id_ != 2  && keypointScore >= keypoint_Threshold)            
                         {
                             std::vector<tako::Node> cluster_aims = spatial.getSpatial_node(loopId); // 比對方
-                            spatialScore = keypoints.compare_spatial2spatial(cluster_test, cluster_aims);
-                        }
-                        cluster_test.pop_front();
+                            spatialScore = keypoints.compare_spatial2spatial(cluster_test2, cluster_aims);
 
-                        // combine  main
-                        if(loopId != 0 )
-                        {
-                            combine.setProb(loop);
-                            bool combineCheck = combine.run(keypointScore, objectScore, spatialScore);
-                            if(combineCheck)
+                            // combine  main
+                            if((spatialScore >= spatial_threshold))
                             {
-                                combine_loop ++ ;
-                                //std::cout << " combine " << node.id_ << " & " << loopId << std::endl;
-                                file_combine << " combine " << node.id_ << " & " << loopId << std::endl;
-                                computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                                combine.setProb(loop);
+                                combineCheck = combine.run(keypointScore, objectScore, spatialScore);
+                                if(combineCheck)
+                                {
+                                    combine_loop ++ ;
+                                    std::cout << " 2combine " << node.id_ << " & " << loopId << std::endl;
+                                    //file_combine << " combine " << node.id_ << " & " << loopId << std::endl;
+                                    computeLoop_combine.at<int> (node.id_ - 1, loopId - 1) = 1;
+                                }
                             }
                         }
+                        cluster_test2.pop_front();
                         //std::cout << " loop[1].size() = " << loop[1].size() << std::endl;
                         //file_object << " loop[1].size() = " << loop[1].size() << std::endl;
                         //std::cout << std::endl;
                     }
-                    file_keypoint << " ****keypoint total loop : " << keypoint_loop <<std::endl;
-                    file_spatial << " ****spatial total loop : " << spatial_loop << std::endl;
-                    file_combine << " ****combine total loop : " << combine_loop << std::endl;
+                    //file_keypoint << " ****keypoint total loop : " << keypoint_loop <<std::endl;
+                    //file_spatial << " ****spatial total loop : " << spatial_loop << std::endl;
+                    //file_combine << " ****combine total loop : " << combine_loop << std::endl;
                     std::cout  << std::endl;
+                    std::cout << " start save file ... " << std::endl;
+                    tako::Verification BoW_precision;
+                    tako::Verification Spatial_precision;
+                    tako::Verification Combine_precision;
 
-
-                    // bowkeypoint precision
+                    // total precision
                     module = 1 ;
+                    std::string precision_file = "precision.txt";
+                    tako::Verification Precision ; 
+                    Precision.init(thr, total_image, keypoint_loop, total_real_loop);
+                    Precision.setFilename(precision_file);
+                    Precision.run(module, computeLoop_keypoint);
+
+                    module = 3 ; 
+                    Precision.init(thr, total_image, spatial_loop, total_real_loop);
+                    Precision.setFilename(precision_file);
+                    Precision.run(module, computeLoop_spatial);
+
+                    module = 4 ; 
+                    Precision.init(thr, weight, total_image, combine_loop, total_real_loop);
+                    Precision.setFilename(precision_file);
+                    Precision.run(module, computeLoop_combine);
+                    // bowkeypoint precision
+                   /* module = 1 ;
                     std::string bow_file = "BoW_precision.txt";
                     BoW_precision.init(thr, total_image, keypoint_loop, total_real_loop);
                     BoW_precision.setFilename(bow_file);
@@ -543,27 +554,25 @@ int main(int argc, char** argv)
                     Combine_precision.setFilename(combine_file);
                     Combine_precision.run(module, computeLoop_combine);
                     std::cout << " finish combine precision & recall ! " << std::endl;
-                    
-                    tip++;
-                }// keypoint threshold
-            } // spatial threshold
+                    */
+                  //  tip++;
+            //    }// keypoint threshold
+            //} // spatial threshold
 
-        }while(weight_point1 != 12); //do
-        
-
-
+       // }while(weight_point1 != 12); //do
     }
     std::cout << "Total parameter finish ! " << std::endl;
     // close file 
-    file_object.close();
-    file_spatial.close();
-    file_keypoint.close();
-    file_combine.close();
+    //file_object.close();
+    //file_spatial.close();
+    //file_keypoint.close();
+    //file_combine.close();
     //file_total.close();
     return 0;
 }
 
 //special
+/*
 void update_weight(float weight[], int* point1, int* point2)
 {
 
@@ -593,7 +602,7 @@ void update_weight(float weight[], int* point1, int* point2)
     }
 
 }
-/*
+
 bool is_thr_end(double thr[], double thr_end[])
 {
     if(thr[0] == thr_end[0] && thr[1] == thr_end[1] && thr[2] == thr_end[2])

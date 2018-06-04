@@ -108,13 +108,13 @@ int main(int argc, char** argv)
     double object_confidence = tako::Config::get<double> ("min_confidence");
     double spatial_threshold = tako::Config::get<double> ("Spatial_Threshold_start");
     // inter
-    //double key_inter = tako::Config::get<double> ("BoW_Threshold_inter");
-    //double obj_inter= tako::Config::get<double> ("min_confidence_inter");
-    //double spa_inter = tako::Config::get<double> ("Spatial_Threshold_inter");
+    double key_inter = tako::Config::get<double> ("BoW_Threshold_inter");
+    double obj_inter= tako::Config::get<double> ("min_confidence_inter");
+    double spa_inter = tako::Config::get<double> ("Spatial_Threshold_inter");
     // end
-    //double keypoint_Threshold_end = tako::Config::get<double> ("BoW_Threshold_end");
-    //double object_confidence_end = tako::Config::get<double> ("min_confidence_end");
-    //double spatial_threshold_end = tako::Config::get<double> ("Spatial_Threshold_end");
+    double keypoint_Threshold_end = tako::Config::get<double> ("BoW_Threshold_end");
+    double object_confidence_end = tako::Config::get<double> ("min_confidence_end");
+    double spatial_threshold_end = tako::Config::get<double> ("Spatial_Threshold_end");
 
 
     //double keypoint_Threshold = keypoint_Threshold_start ; 
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     // start
     float alpha = tako::Config::get<float> ("alpha_start");
     float beta  = tako::Config::get<float> ("beta_start");
-    float gamma = 1 - alpha - beta ;
+    float gamma = (float)1 - alpha - beta ;
     //float gamma = tako::Config::get<float> ("gamma_start");
     // inter
     //float weight_inter = tako::Config::get<float> ("weight_inter");
@@ -143,11 +143,11 @@ int main(int argc, char** argv)
         //set parameter server
         // three module threshold
         // collect threshold
-        //double thr_start[3] = {keypoint_Threshold_start, object_confidence, spatial_threshold_start};
+        double thr_start[3] = {keypoint_Threshold, object_confidence, spatial_threshold};
         
-        //double thr_inter[3] = {key_inter, obj_inter, spa_inter};
+        double thr_inter[3] = {key_inter, obj_inter, spa_inter};
         // threshold end
-        //double thr_end[3] = {keypoint_Threshold_end, object_confidence_end, spatial_threshold_end};
+        double thr_end[3] = {keypoint_Threshold_end, object_confidence_end, spatial_threshold_end};
         // weight
         // init parameter thr_end & weight_end
         //tako::Parameter parameter(thr_start, thr_inter, thr_end, weight, weight_inter, weight_end);
@@ -164,8 +164,8 @@ int main(int argc, char** argv)
             // threshold keypoint & spatial module
             //for(double spatial_threshold = thr_start[2]; spatial_threshold <= thr_end[2]; spatial_threshold = spatial_threshold + thr_inter[2])
             //{
-            //    for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold <= thr_end[0]; keypoint_Threshold = keypoint_Threshold + thr_inter[0])
-            //    {
+                for(double keypoint_Threshold = thr_start[0]; keypoint_Threshold >= thr_end[0]; keypoint_Threshold = keypoint_Threshold - thr_inter[0])
+                {
                     //file_keypoint <<tip<< " ************************************************************** " << std::endl;
                     //file_object <<tip<< " ************************************************************** " << std::endl;
                     //file_spatial <<tip<< " ************************************************************** " << std::endl;
@@ -556,8 +556,8 @@ int main(int argc, char** argv)
                     std::cout << " finish combine precision & recall ! " << std::endl;
                     */
                   //  tip++;
-            //    }// keypoint threshold
-            //} // spatial threshold
+                }// keypoint threshold
+           // } // spatial threshold
 
        // }while(weight_point1 != 12); //do
     }

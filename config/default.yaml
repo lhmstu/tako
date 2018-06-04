@@ -29,9 +29,9 @@ object_classnames: /home/alvin/lib/darknet/data/coco.names
 
 
 
-#Total threshold
-# start
-BoW_Threshold_start: 0.03
+#Total threshol
+# star
+BoW_Threshold_start: 0.11
 min_confidence: 0.24
 Spatial_Threshold_start: 0.01
 
@@ -41,7 +41,7 @@ min_confidence_inter: 0.24
 Spatial_Threshold_inter: 0.01
 
 # end
-BoW_Threshold_end: 0.11
+BoW_Threshold_end: 0.01
 min_confidence_end: 0.24
 Spatial_Threshold_end: 0.05
 
@@ -49,8 +49,8 @@ Spatial_Threshold_end: 0.05
 # final scoring
 # a+b+g = 1 
 alpha_start: 0.1
-beta_start: 0.1
-gamma_start: 0.4
+beta_start: 0.9
+gamma_start: 0.0
 #inter
 weight_inter: 0.1
 # end
@@ -62,6 +62,6 @@ weight_end: 0.9
 #total_image: 452
 #total_image for tf-idf
 total_image: 452
-total_real_loop: 220
+total_real_loop: 190
  
 

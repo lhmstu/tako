@@ -42,6 +42,12 @@ TARGET_LINK_LIBRARIES( spatial_test
 	${LIBRARIES_TAKO} 
         tako
 )
+
+add_executable( feature_extraction feature_extraction.cpp)
+TARGET_LINK_LIBRARIES( feature_extraction
+	${LIBRARIES_TAKO} 
+        tako
+)
 #TARGET_LINK_LIBRARIES( feature_test
 #        rtabmap_core
 #        rtabmap_utilite 

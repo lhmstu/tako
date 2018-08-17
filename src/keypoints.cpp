@@ -59,14 +59,18 @@ namespace tako
     double KeyPoints::compare_spatial2spatial(std::list<tako::Node> cluster_test, std::vector<tako::Node> cluster_dest)
     {
         double scoring = 0;
+        tako::node node_1;
+        tako::node node_2;
         for(std::list<tako::Node>::iterator iter = cluster_test.begin(); iter != cluster_test.end(); iter++)
         {
-            for(tako::Node &node:cluster_dest)
-            {
-                scoring = scoring + this->compare_Image2Image(*iter, node);
-            }
+            node_1.descriptor_ = node_1.descriptor_ + iter.descriptor_;
         }
-        scoring = scoring / 9;
+        for(tako::Node &node:cluster_dest)
+        {
+            node_2.descriptor_ = node_2.descriptor_ + iter.descriptor_;
+                
+        }
+        scoring = this->compare_Image2Image(node_1, node_2);
 
         return scoring ;
 

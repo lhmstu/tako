@@ -76,7 +76,8 @@ namespace tako
 
         //std::cerr<<" setting Threshold..." <<std::endl;
 
-        double threshold = this->setThreshold();
+        //double threshold = this->setThreshold();
+        double threshold = 0.06;
         double score = this->compute_scoring(keypoint_score, object_score, spatial_score);
         //bool check  = this->checkLoop(score, threshold);
 
